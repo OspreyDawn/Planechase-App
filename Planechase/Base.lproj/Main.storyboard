@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6205" systemVersion="14A299l" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6198"/>
+    </dependencies>
+    <scenes>
+        <!--Home View-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="HomeView" customModule="Planechase" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mount keralia.crop.hq" id="iiw-IP-d8d">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" id="T6N-IL-Mq6">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Ddh-Tp-Qnt">
+                                        <rect key="frame" x="954" y="35" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="button-reshuffle">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="reshuffleButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Khw-T6-Plh"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                            </view>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" id="DNy-Eu-8Gz">
+                                <rect key="frame" x="75" y="81" width="874" height="607"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mount keralia.hq" id="Pub-Pr-auJ">
+                                        <rect key="frame" x="0.0" y="0.0" width="874" height="607"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="R2x-Jh-lsb">
+                                        <rect key="frame" x="0.0" y="0.0" width="874" height="607"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="rollDieButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4la-4B-Ph6"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="35"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="gcF-Hk-HsI" appends="YES" id="ky8-V8-P28"/>
+                                </connections>
+                            </view>
+                            <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" id="pqy-tT-fs2">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="b1V-eQ-Bh7">
+                                        <rect key="frame" x="384" y="256" width="256" height="256"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
+                    <connections>
+                        <outlet property="backgroundImageView" destination="iiw-IP-d8d" id="AiC-VU-dTm"/>
+                        <outlet property="backgroundMaskView" destination="T6N-IL-Mq6" id="W3P-TC-Rf6"/>
+                        <outlet property="planarCardView" destination="DNy-Eu-8Gz" id="hfE-af-D5P"/>
+                        <outlet property="planarDieImageVIew" destination="b1V-eQ-Bh7" id="eSe-Il-SUS"/>
+                        <outlet property="planarDieMaskView" destination="pqy-tT-fs2" id="BW6-FE-poO"/>
+                        <outlet property="planarImageView" destination="Pub-Pr-auJ" id="yyk-3L-jg3"/>
+                        <outlet property="reshuffleButton" destination="Ddh-Tp-Qnt" id="ZZ0-DS-08P"/>
+                        <outlet property="rollDieButton" destination="R2x-Jh-lsb" id="MDD-TR-jwT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="gcF-Hk-HsI">
+                    <connections>
+                        <action selector="handleGesture:" destination="BYZ-38-t0r" id="Ltt-Sc-0KF"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="371" y="689"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="button-reshuffle" width="100" height="100"/>
+        <image name="mount keralia.crop.hq" width="1255" height="520"/>
+        <image name="mount keralia.hq" width="1490" height="1040"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination">
+            <size key="portraitSize" width="768" height="1024"/>
+            <size key="landscapeSize" width="1024" height="768"/>
+        </simulatedScreenMetrics>
+    </simulatedMetricsContainer>
+</document>
