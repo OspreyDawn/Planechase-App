@@ -16,8 +16,14 @@ class HomeView: UIViewController {
     @IBOutlet weak var planarCardView: UIView!
     @IBOutlet weak var planarImageView: UIImageView!
     @IBOutlet weak var planarDieImageVIew: UIImageView!
+    @IBOutlet weak var phenomSliderView: UIView!
+    @IBOutlet weak var phenomSliderImageView: UIImageView!
     @IBOutlet weak var reshuffleButton: UIButton!
+    @IBOutlet weak var phenomChanceButton: UIButton!
+    @IBOutlet weak var phenomChanceSlider: UISlider!
     @IBOutlet weak var rollDieButton: UIButton!
+    @IBOutlet weak var hideSliderButton: UIButton!
+    @IBOutlet weak var phenomChanceLabel: UILabel!
     
     var animator : UIDynamicAnimator!
     var attachmentBehavior : UIAttachmentBehavior!
@@ -54,21 +60,14 @@ class HomeView: UIViewController {
             
             animator.removeBehavior(attachmentBehavior)
             
-            snapBehavior = UISnapBehavior(item: myView, snapToPoint: view.center)
+            snapBehavior = UISnapBehavior(item: myView, snapToPoint: CGPoint(x: view.center.x, y: view.center.y + 25))
             animator.addBehavior(snapBehavior)
             
             let translation = sender.translationInView(view)
             if translation.x < -500 {
                 
-                animator.removeAllBehaviors()
+                changePlane(0.5)
                 
-                var gravity = UIGravityBehavior(items: [planarCardView])
-                gravity.gravityDirection = CGVectorMake(-50, 0)
-                animator.addBehavior(gravity)
-                
-                delay (0.3) {
-                    self.refreshView()
-                }
             }
         }
         
@@ -76,7 +75,7 @@ class HomeView: UIViewController {
     
     func refreshView() {
         
-        isPhenom = phenomGenerator(phenomProbability)
+        isPhenom = numberGenerator(phenomProbability)
         
         if isPhenom >= 1 {
             
@@ -91,13 +90,44 @@ class HomeView: UIViewController {
         }
         
         animator.removeAllBehaviors()
-        planarCardView.center = self.view.center
+        planarCardView.center = CGPoint(x: view.center.x, y: view.center.y + 25)
         
         viewDidAppear(true)
         
     }
     
+    func changePlane(timeDelay: Double) {
+        
+        animator.removeAllBehaviors()
+        
+        var gravity = UIGravityBehavior(items: [planarCardView])
+        gravity.gravityDirection = CGVectorMake(-50, 0)
+        animator.addBehavior(gravity)
+        
+        delay (timeDelay) {
+            self.refreshView()
+        }
+        
+    }
+    
     @IBAction func rollDieButtonDidPress(sender: AnyObject) {
+        
+        var rollDie = numberGenerator(6)
+        var dieResult = String()
+        
+        if rollDie >= 2 {
+        
+            dieResult = "img-sq_pd-b_180"
+        
+        } else if rollDie == 1 {
+        
+            dieResult = "img-sq_pd-c_180"
+        
+        } else if rollDie == 0 {
+        
+            dieResult = "img-sq_pd-p_180"
+        
+        }
         
         planarDieMaskView.alpha = 0
         planarDieMaskView.hidden = false
@@ -114,7 +144,7 @@ class HomeView: UIViewController {
             
             self.planarDieImageVIew.alpha = 0
             self.planarDieImageVIew.hidden = false
-            self.planarDieImageVIew.image = UIImage(named: dieResult())
+            self.planarDieImageVIew.image = UIImage(named: dieResult)
             
             spring(0.5) {
                 self.planarDieImageVIew.alpha = 1
@@ -133,6 +163,13 @@ class HomeView: UIViewController {
             delay (0.5) {
                 
                 self.planarDieMaskView.hidden = true
+                
+                if rollDie == 0 {
+                    
+                    self.changePlane(0.3)
+                    
+                }
+                
             }
             
         }
@@ -148,6 +185,45 @@ class HomeView: UIViewController {
         
     }
     
+    @IBAction func phenomChanceButtonDidPress(sender: AnyObject) {
+        
+        phenomSliderView.hidden = false
+        hideSliderButton.hidden = false
+        
+        let scale = CGAffineTransformMakeScale(0.3, 0.3)
+        let translate = CGAffineTransformMakeTranslation(0, -50)
+        
+        phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+        phenomSliderView.alpha = 0
+        
+        spring (0.5){
+            
+            let scale = CGAffineTransformMakeScale(1, 1)
+            let translate = CGAffineTransformMakeTranslation(0, 0)
+            
+            self.phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+            self.phenomSliderView.alpha = 1
+            
+        }
+        
+    }
+    
+    @IBAction func hideSliderButtonDidPress(sender: AnyObject) {
+        
+        phenomSliderView.hidden = true
+        hideSliderButton.hidden = true
+        
+    }
+    
+    @IBAction func phenomChanceSliderDidChange(sender: AnyObject) {
+        
+        var sliderValue = Int(phenomChanceSlider.value * 10)
+        
+        phenomChanceLabel.text = "1 in " + "\(sliderValue)"
+        
+        phenomProbability = sliderValue
+    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
     }
@@ -155,14 +231,19 @@ class HomeView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        var idleTimerDisabled: Bool
+        
         order = cardOrder(cardCount())
         
         insertBlurView(backgroundMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(planarDieMaskView, UIBlurEffectStyle.Dark)
+        // insertBlurView(phenomSliderImageView, UIBlurEffectStyle.Light)
         
         animator = UIDynamicAnimator(referenceView: view)
         
         planarCardView.alpha = 0
+        
+        idleTimerDisabled = true
         
     }
     
@@ -187,7 +268,7 @@ class HomeView: UIViewController {
         
         if isPhenom == 0 {
             
-            var phenomSelect = phenomGenerator(phenomList.count)
+            var phenomSelect = numberGenerator(phenomList.count)
             
             planarImageView.image = UIImage(named: getCard(phenomList)[phenomSelect] + ".hq")
             backgroundImageView.image = UIImage(named: getCard(phenomList)[phenomSelect] + ".crop.hq")

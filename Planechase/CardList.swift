@@ -109,7 +109,7 @@ func getCardName(idx: Int) -> String {
     return getCard(cardList)[idx]
 }
 
-func phenomGenerator(chance: Int) -> Int {
+func numberGenerator(chance: Int) -> Int {
     
     var randomNumber = Int(arc4random_uniform(UInt32(chance)))
     

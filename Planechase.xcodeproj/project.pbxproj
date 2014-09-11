@@ -16,7 +16,6 @@
 		4A61F3C619A4652E00E9A2DD /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A61F3C519A4652E00E9A2DD /* Images.xcassets */; };
 		4A61F3D219A4652F00E9A2DD /* PlanechaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A61F3D119A4652F00E9A2DD /* PlanechaseTests.swift */; };
 		4A61F3DE19A4661B00E9A2DD /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A61F3DD19A4661B00E9A2DD /* HomeView.swift */; };
-		4A6B53B519A881600002AEA7 /* PlanarDie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6B53B419A881600002AEA7 /* PlanarDie.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,7 +42,6 @@
 		4A61F3D019A4652F00E9A2DD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A61F3D119A4652F00E9A2DD /* PlanechaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanechaseTests.swift; sourceTree = "<group>"; };
 		4A61F3DD19A4661B00E9A2DD /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		4A6B53B419A881600002AEA7 /* PlanarDie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlanarDie.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,7 +83,6 @@
 		4A61F3BB19A4652E00E9A2DD /* Planechase */ = {
 			isa = PBXGroup;
 			children = (
-				4A6B53B419A881600002AEA7 /* PlanarDie.swift */,
 				4A2AF3E619A4AE80002ED0D6 /* CardList.swift */,
 				4A001EF619A4680B0028D513 /* BlurView.swift */,
 				4A001EF819A4680B0028D513 /* Misc.swift */,
@@ -226,7 +223,6 @@
 				4A61F3BF19A4652E00E9A2DD /* AppDelegate.swift in Sources */,
 				4A2AF3E719A4AE80002ED0D6 /* CardList.swift in Sources */,
 				4A61F3DE19A4661B00E9A2DD /* HomeView.swift in Sources */,
-				4A6B53B519A881600002AEA7 /* PlanarDie.swift in Sources */,
 				4A001EFA19A4680B0028D513 /* BlurView.swift in Sources */,
 				4A001EFD19A4680B0028D513 /* SpringAnimation.swift in Sources */,
 				4A001EFC19A4680B0028D513 /* Misc.swift in Sources */,
