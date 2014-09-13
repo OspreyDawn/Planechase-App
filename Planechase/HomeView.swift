@@ -90,21 +90,12 @@ class HomeView: UIViewController {
                     
                 }
                 
-            } else if isPhenom == 0 {
+            } else if isPhenom == 0 && translation.x < -500 {
                 
-                if translation.x < -500 {
-                    
-                    changePlane(0.5, direction: -50, planeOrder: 0)
-                    
-                    self.isPhenom = numberGenerator(self.phenomProbability)
-                    
-                    if self.isPhenom >= 1 {
-                        
-                        currentPlane++
-                        
-                    }
-                    
-                }
+                changePlane(0.5, direction: -50, planeOrder: 0)
+                
+                isPhenom = 1
+                currentPlane++
                 
             }
         }
