@@ -40,17 +40,13 @@
                                             <action selector="phenomChanceButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kAG-Yd-cfc"/>
                                         </connections>
                                     </button>
-                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" id="pqy-tT-fs2">
-                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="zou-o4-qAm">
+                                        <rect key="frame" x="20" y="35" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="b1V-eQ-Bh7">
-                                                <rect key="frame" x="384" y="256" width="256" height="256"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                            </imageView>
-                                        </subviews>
-                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
-                                    </view>
+                                        <state key="normal" image="button-cardSelection">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                             </view>
@@ -102,7 +98,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </imageView>
-                                    <slider opaque="NO" alpha="0.69999999999999973" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.0" maxValue="1" id="mjA-X2-O3e">
+                                    <slider opaque="NO" alpha="0.69999999999999973" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="2" maxValue="10" id="mjA-X2-O3e">
                                         <rect key="frame" x="20" y="82" width="210" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
@@ -124,6 +120,17 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
+                            </view>
+                            <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" id="pqy-tT-fs2">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="b1V-eQ-Bh7">
+                                        <rect key="frame" x="384" y="256" width="256" height="256"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -157,6 +164,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="button-cardSelection" width="100" height="100"/>
         <image name="button-phenom" width="100" height="100"/>
         <image name="button-reshuffle" width="100" height="100"/>
         <image name="image-phenomSliderView" width="500" height="240"/>

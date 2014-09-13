@@ -32,8 +32,10 @@ class HomeView: UIViewController {
     
     var number = 0
     var order = [Int]()
+    var translateFrom = CGFloat()
     var phenomProbability = 10
     var isPhenom = 1
+    var currentPlane = 0
     
     @IBAction func handleGesture(sender: AnyObject) {
         
@@ -53,9 +55,13 @@ class HomeView: UIViewController {
             animator.addBehavior(attachmentBehavior)
             
         }
+            
         else if sender.state == UIGestureRecognizerState.Changed {
+            
             attachmentBehavior.anchorPoint = location
+            
         }
+            
         else if sender.state == UIGestureRecognizerState.Ended {
             
             animator.removeBehavior(attachmentBehavior)
@@ -64,9 +70,37 @@ class HomeView: UIViewController {
             animator.addBehavior(snapBehavior)
             
             let translation = sender.translationInView(view)
-            if translation.x < -500 {
+            
+            if isPhenom >= 1 {
                 
-                changePlane(0.5)
+                if translation.x < -500 && number < currentPlane {
+                    
+                    changePlane(0.5, direction: -50, planeOrder: 0)
+                    translateFrom = 2000
+                    
+                } else if translation.x > 500 && number > 0 {
+                    
+                    changePlane(0.5, direction: 50, planeOrder: 1)
+                    translateFrom = -2000
+                    
+                }
+                
+            } else if isPhenom == 0 {
+                
+                if translation.x < -500 {
+                    
+                    changePlane(0.5, direction: -50, planeOrder: 0)
+                    translateFrom = 2000
+                    
+                    self.isPhenom = numberGenerator(self.phenomProbability)
+                    
+                    if self.isPhenom >= 1 {
+                        
+                        currentPlane++
+                        
+                    }
+                    
+                }
                 
             }
         }
@@ -74,14 +108,6 @@ class HomeView: UIViewController {
     }
     
     func refreshView() {
-        
-        isPhenom = numberGenerator(phenomProbability)
-        
-        if isPhenom >= 1 {
-            
-            number++
-            
-        }
         
         if number > cardList.count - 1 {
             
@@ -96,16 +122,51 @@ class HomeView: UIViewController {
         
     }
     
-    func changePlane(timeDelay: Double) {
+    func changePlane(timeDelay: Double, direction: CGFloat, planeOrder: Int) {
+        
+        var planeTo = planeOrder
         
         animator.removeAllBehaviors()
         
         var gravity = UIGravityBehavior(items: [planarCardView])
-        gravity.gravityDirection = CGVectorMake(-50, 0)
+        gravity.gravityDirection = CGVectorMake(direction, 0)
         animator.addBehavior(gravity)
         
         delay (timeDelay) {
             self.refreshView()
+        }
+        
+        if planeTo == 0 {
+            
+            number++
+            
+            
+        } else if planeTo == 1 {
+            
+            number--
+            
+        } else if planeTo == 2 {
+            
+            number == number
+            
+        }
+        
+    }
+    
+    func transitionPlane(direction: CGFloat) {
+        
+        let scale = CGAffineTransformMakeScale(0.5, 0.5)
+        let translate = CGAffineTransformMakeTranslation(direction, 0)
+        
+        planarCardView.transform = CGAffineTransformConcat(scale, translate)
+        
+        spring(0.5){
+            
+            let scale = CGAffineTransformMakeScale(1, 1)
+            let translate = CGAffineTransformMakeTranslation(0, 0)
+            
+            self.planarCardView.transform = CGAffineTransformConcat(scale, translate)
+            
         }
         
     }
@@ -166,7 +227,18 @@ class HomeView: UIViewController {
                 
                 if rollDie == 0 {
                     
-                    self.changePlane(0.3)
+                    self.isPhenom = numberGenerator(self.phenomProbability)
+                    
+                    if self.isPhenom >= 1 {
+                        
+                        self.changePlane(0.3, direction: -50, planeOrder: 0)
+                        self.currentPlane++
+                    
+                    } else {
+                        
+                        self.changePlane(0.3, direction: -50, planeOrder: 2)
+                        
+                    }
                     
                 }
                 
@@ -217,7 +289,7 @@ class HomeView: UIViewController {
     
     @IBAction func phenomChanceSliderDidChange(sender: AnyObject) {
         
-        var sliderValue = Int(phenomChanceSlider.value * 10)
+        var sliderValue = Int(phenomChanceSlider.value)
         
         phenomChanceLabel.text = "1 in " + "\(sliderValue)"
         
@@ -250,19 +322,7 @@ class HomeView: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(Bool())
         
-        let scale = CGAffineTransformMakeScale(0.5, 0.5)
-        let translate = CGAffineTransformMakeTranslation(2000, 0)
-        
-        planarCardView.transform = CGAffineTransformConcat(scale, translate)
-        
-        spring(0.5){
-            
-            let scale = CGAffineTransformMakeScale(1, 1)
-            let translate = CGAffineTransformMakeTranslation(0, 0)
-            
-            self.planarCardView.transform = CGAffineTransformConcat(scale, translate)
-            
-        }
+        transitionPlane(translateFrom)
         
         animator = UIDynamicAnimator(referenceView: view)
         
