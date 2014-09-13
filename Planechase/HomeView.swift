@@ -14,8 +14,11 @@ class HomeView: UIViewController {
     @IBOutlet weak var backgroundMaskView: UIView!
     @IBOutlet weak var planarDieMaskView: UIView!
     @IBOutlet weak var planarCardView: UIView!
+    @IBOutlet weak var cardSelectView: UIView!
+    @IBOutlet weak var cardListView: UIView!
+    @IBOutlet weak var cardPreviewImageView: UIImageView!
     @IBOutlet weak var planarImageView: UIImageView!
-    @IBOutlet weak var planarDieImageVIew: UIImageView!
+    @IBOutlet weak var planarDieImageView: UIImageView!
     @IBOutlet weak var phenomSliderView: UIView!
     @IBOutlet weak var phenomSliderImageView: UIImageView!
     @IBOutlet weak var reshuffleButton: UIButton!
@@ -23,6 +26,8 @@ class HomeView: UIViewController {
     @IBOutlet weak var phenomChanceSlider: UISlider!
     @IBOutlet weak var rollDieButton: UIButton!
     @IBOutlet weak var currentPlaneButton: UIButton!
+    @IBOutlet weak var cardSelectButton: UIButton!
+    @IBOutlet weak var cardSelectDoneButton: UIButton!
     @IBOutlet weak var hideSliderButton: UIButton!
     @IBOutlet weak var phenomChanceLabel: UILabel!
     
@@ -34,7 +39,7 @@ class HomeView: UIViewController {
     var number = 0
     var order = [Int]()
     var translateFrom = CGFloat()
-    var phenomProbability = 10
+    var phenomProbability = Int()
     var isPhenom = 1
     var currentPlane = 0
     var runPhenom = Bool()
@@ -156,7 +161,7 @@ class HomeView: UIViewController {
             
         } else if planeTo == 2 {
             
-            return
+            translateFrom = 2000
             
         } else if planeTo == 3 {
             
@@ -207,7 +212,7 @@ class HomeView: UIViewController {
         planarDieMaskView.alpha = 0
         planarDieMaskView.hidden = false
         
-        planarDieImageVIew.hidden = true
+        planarDieImageView.hidden = true
         
         spring(0.5) {
             
@@ -217,12 +222,12 @@ class HomeView: UIViewController {
         
         delay (0.5) {
             
-            self.planarDieImageVIew.alpha = 0
-            self.planarDieImageVIew.hidden = false
-            self.planarDieImageVIew.image = UIImage(named: dieResult)
+            self.planarDieImageView.alpha = 0
+            self.planarDieImageView.hidden = false
+            self.planarDieImageView.image = UIImage(named: dieResult)
             
             spring(0.5) {
-                self.planarDieImageVIew.alpha = 1
+                self.planarDieImageView.alpha = 1
             }
             
         }
@@ -232,6 +237,7 @@ class HomeView: UIViewController {
             spring(0.5) {
                 
                 self.planarDieMaskView.alpha = 0
+                self.planarDieImageView.alpha = 0
                 
             }
             
@@ -241,7 +247,7 @@ class HomeView: UIViewController {
                 
                 if rollDie == 0 {
                     
-                    self.rollSuccess(self.runPhenom)
+                    self.rollPlaneswalk(self.runPhenom)
                     
                 }
                 
@@ -251,7 +257,7 @@ class HomeView: UIViewController {
         
     }
     
-    func rollSuccess(phenomOn: Bool) {
+    func rollPlaneswalk(phenomOn: Bool) {
         
         var phenomCheck = phenomOn
         
@@ -274,18 +280,27 @@ class HomeView: UIViewController {
             
             changePlane(0.3, direction: -50, planeOrder: 0)
             currentPlane++
+            isPhenom = 1
             
         }
         
     }
     
-    @IBAction func reshuffleButtonDidPress(sender: AnyObject) {
+    func shuffleCards() {
         
         order = shuffleArray(&order)
         number = 0
+        currentPlane = 0
         isPhenom = 1
+        currentPlaneButton.hidden = true
         viewDidAppear(true)
         
+    }
+    
+    @IBAction func reshuffleButtonDidPress(sender: AnyObject) {
+        
+        shuffleCards()
+
     }
     
     @IBAction func phenomChanceButtonDidPress(sender: AnyObject) {
@@ -352,6 +367,39 @@ class HomeView: UIViewController {
         }
     }
     
+    @IBAction func cardSelectButtonDidPress(sender: AnyObject) {
+        
+        cardSelectView.hidden = false
+        cardSelectView.alpha = 0
+        cardListView.transform = CGAffineTransformMakeTranslation(-320, 0)
+        cardPreviewImageView.transform = CGAffineTransformMakeScale(0.3, 0.3)
+        
+        spring(0.5) {
+            
+            self.cardSelectView.alpha = 1
+            self.cardListView.transform = CGAffineTransformMakeTranslation(0, 0)
+            self.cardPreviewImageView.transform = CGAffineTransformMakeScale(1, 1)
+            
+        }
+        
+    }
+    
+    @IBAction func cardSelectDoneDidPress(sender: AnyObject) {
+        
+        cardSelectView.alpha = 1
+        cardListView.transform = CGAffineTransformMakeTranslation(0, 0)
+        cardPreviewImageView.transform = CGAffineTransformMakeScale(1, 1)
+        
+        spring(0.5) {
+            
+            self.cardSelectView.alpha = 0
+            self.cardListView.transform = CGAffineTransformMakeTranslation(-320, 0)
+            self.cardPreviewImageView.transform = CGAffineTransformMakeScale(0.3, 0.3)
+            
+        }
+        
+    }
+    
     @IBAction func currentPlaneButtonDidPress(sender: AnyObject) {
         
         changePlane(0.5, direction: -50, planeOrder: 3)
@@ -365,19 +413,17 @@ class HomeView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var idleTimerDisabled: Bool
+        UIApplication.sharedApplication().idleTimerDisabled = true
         
         order = cardOrder(cardCount())
         
         insertBlurView(backgroundMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(planarDieMaskView, UIBlurEffectStyle.Dark)
-        // insertBlurView(phenomSliderImageView, UIBlurEffectStyle.Light)
+        insertBlurView(cardSelectView, UIBlurEffectStyle.Dark)
         
         animator = UIDynamicAnimator(referenceView: view)
         
         planarCardView.alpha = 0
-        
-        idleTimerDisabled = true
         
     }
     

@@ -46,6 +46,9 @@
                                         <state key="normal" image="button-cardSelection">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="cardSelectButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MBf-QT-eQg"/>
+                                        </connections>
                                     </button>
                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="aDG-ak-lol">
                                         <rect key="frame" x="416" y="721" width="191" height="34"/>
@@ -136,10 +139,54 @@
                             <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" id="pqy-tT-fs2">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                            </view>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="b1V-eQ-Bh7">
+                                <rect key="frame" x="384" y="256" width="256" height="256"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </imageView>
+                            <view hidden="YES" contentMode="scaleToFill" id="LTF-Sg-Fp9">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="b1V-eQ-Bh7">
-                                        <rect key="frame" x="384" y="256" width="256" height="256"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fCw-un-WY6">
+                                        <rect key="frame" x="954" y="35" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="button-done">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="cardSelectDoneDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RoI-wN-1nx"/>
+                                        </connections>
+                                    </button>
+                                    <view contentMode="scaleToFill" id="Vn8-SE-vog">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="768"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="TTb-fj-wfh">
+                                                <rect key="frame" x="0.0" y="101" width="320" height="667"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            </tableView>
+                                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="DKT-FA-PtI">
+                                                <rect key="frame" x="20" y="46" width="280" height="29"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <segments>
+                                                    <segment title="Planes"/>
+                                                    <segment title="Phenomenons"/>
+                                                </segments>
+                                                <color key="tintColor" white="1" alpha="0.70000000000000007" colorSpace="calibratedWhite"/>
+                                            </segmentedControl>
+                                        </subviews>
+                                    </view>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mount keralia.hq" id="WEa-Nk-nrt">
+                                        <rect key="frame" x="373" y="177" width="601" height="414"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="25"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
@@ -151,6 +198,11 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="iiw-IP-d8d" id="AiC-VU-dTm"/>
                         <outlet property="backgroundMaskView" destination="T6N-IL-Mq6" id="W3P-TC-Rf6"/>
+                        <outlet property="cardListView" destination="Vn8-SE-vog" id="hR4-uy-IAa"/>
+                        <outlet property="cardPreviewImageView" destination="WEa-Nk-nrt" id="giA-nx-bio"/>
+                        <outlet property="cardSelectButton" destination="zou-o4-qAm" id="Tvs-wa-0Eg"/>
+                        <outlet property="cardSelectDoneButton" destination="fCw-un-WY6" id="4Tj-tm-fcX"/>
+                        <outlet property="cardSelectView" destination="LTF-Sg-Fp9" id="cXP-LQ-fcd"/>
                         <outlet property="currentPlaneButton" destination="aDG-ak-lol" id="rZQ-IF-RuV"/>
                         <outlet property="hideSliderButton" destination="T0g-nG-Xvr" id="lOU-Dx-w7O"/>
                         <outlet property="phenomChanceButton" destination="Ezf-bd-hwN" id="Xx9-sn-oah"/>
@@ -159,7 +211,7 @@
                         <outlet property="phenomSliderImageView" destination="x55-KD-q3A" id="PIz-eT-8n4"/>
                         <outlet property="phenomSliderView" destination="H8f-de-HZz" id="g1u-0e-GA3"/>
                         <outlet property="planarCardView" destination="DNy-Eu-8Gz" id="hfE-af-D5P"/>
-                        <outlet property="planarDieImageVIew" destination="b1V-eQ-Bh7" id="eSe-Il-SUS"/>
+                        <outlet property="planarDieImageView" destination="b1V-eQ-Bh7" id="Wxg-5R-lvE"/>
                         <outlet property="planarDieMaskView" destination="pqy-tT-fs2" id="BW6-FE-poO"/>
                         <outlet property="planarImageView" destination="Pub-Pr-auJ" id="yyk-3L-jg3"/>
                         <outlet property="reshuffleButton" destination="Ddh-Tp-Qnt" id="ZZ0-DS-08P"/>
@@ -178,6 +230,7 @@
     </scenes>
     <resources>
         <image name="button-cardSelection" width="100" height="100"/>
+        <image name="button-done" width="100" height="100"/>
         <image name="button-phenom" width="100" height="100"/>
         <image name="button-reshuffle" width="100" height="100"/>
         <image name="image-phenomSliderView" width="500" height="240"/>
