@@ -47,6 +47,18 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="aDG-ak-lol">
+                                        <rect key="frame" x="416" y="721" width="191" height="34"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <state key="normal" title="Return to Current Plane">
+                                            <color key="titleColor" white="1" alpha="0.70000000000000007" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="currentPlaneButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jgd-2k-OaJ"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
                             </view>
@@ -98,7 +110,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                     </imageView>
-                                    <slider opaque="NO" alpha="0.69999999999999973" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="2" maxValue="10" id="mjA-X2-O3e">
+                                    <slider opaque="NO" alpha="0.69999999999999973" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="1" maxValue="10" id="mjA-X2-O3e">
                                         <rect key="frame" x="20" y="82" width="210" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
@@ -139,6 +151,7 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="iiw-IP-d8d" id="AiC-VU-dTm"/>
                         <outlet property="backgroundMaskView" destination="T6N-IL-Mq6" id="W3P-TC-Rf6"/>
+                        <outlet property="currentPlaneButton" destination="aDG-ak-lol" id="rZQ-IF-RuV"/>
                         <outlet property="hideSliderButton" destination="T0g-nG-Xvr" id="lOU-Dx-w7O"/>
                         <outlet property="phenomChanceButton" destination="Ezf-bd-hwN" id="Xx9-sn-oah"/>
                         <outlet property="phenomChanceLabel" destination="nOu-ef-Ve0" id="cJR-hU-L3L"/>

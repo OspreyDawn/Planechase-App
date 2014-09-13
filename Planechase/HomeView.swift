@@ -22,6 +22,7 @@ class HomeView: UIViewController {
     @IBOutlet weak var phenomChanceButton: UIButton!
     @IBOutlet weak var phenomChanceSlider: UISlider!
     @IBOutlet weak var rollDieButton: UIButton!
+    @IBOutlet weak var currentPlaneButton: UIButton!
     @IBOutlet weak var hideSliderButton: UIButton!
     @IBOutlet weak var phenomChanceLabel: UILabel!
     
@@ -36,6 +37,7 @@ class HomeView: UIViewController {
     var phenomProbability = 10
     var isPhenom = 1
     var currentPlane = 0
+    var runPhenom = Bool()
     
     @IBAction func handleGesture(sender: AnyObject) {
         
@@ -76,12 +78,10 @@ class HomeView: UIViewController {
                 if translation.x < -500 && number < currentPlane {
                     
                     changePlane(0.5, direction: -50, planeOrder: 0)
-                    translateFrom = 2000
                     
                 } else if translation.x > 500 && number > 0 {
                     
                     changePlane(0.5, direction: 50, planeOrder: 1)
-                    translateFrom = -2000
                     
                 }
                 
@@ -90,7 +90,6 @@ class HomeView: UIViewController {
                 if translation.x < -500 {
                     
                     changePlane(0.5, direction: -50, planeOrder: 0)
-                    translateFrom = 2000
                     
                     self.isPhenom = numberGenerator(self.phenomProbability)
                     
@@ -109,16 +108,24 @@ class HomeView: UIViewController {
     
     func refreshView() {
         
+        currentPlaneButton.hidden = true
+        
+        animator.removeAllBehaviors()
+        planarCardView.center = CGPoint(x: view.center.x, y: view.center.y + 25)
+        
         if number > cardList.count - 1 {
             
             order = shuffleArray(&order)
             number = 0
         }
         
-        animator.removeAllBehaviors()
-        planarCardView.center = CGPoint(x: view.center.x, y: view.center.y + 25)
-        
         viewDidAppear(true)
+        
+        if number < currentPlane {
+            
+            currentPlaneButton.hidden = false
+            
+        }
         
     }
     
@@ -139,15 +146,22 @@ class HomeView: UIViewController {
         if planeTo == 0 {
             
             number++
+            translateFrom = 2000
             
             
         } else if planeTo == 1 {
             
             number--
+            translateFrom = -2000
             
         } else if planeTo == 2 {
             
-            number == number
+            return
+            
+        } else if planeTo == 3 {
+            
+            number = currentPlane
+            translateFrom = 2000
             
         }
         
@@ -227,22 +241,39 @@ class HomeView: UIViewController {
                 
                 if rollDie == 0 {
                     
-                    self.isPhenom = numberGenerator(self.phenomProbability)
-                    
-                    if self.isPhenom >= 1 {
-                        
-                        self.changePlane(0.3, direction: -50, planeOrder: 0)
-                        self.currentPlane++
-                    
-                    } else {
-                        
-                        self.changePlane(0.3, direction: -50, planeOrder: 2)
-                        
-                    }
+                    self.rollSuccess(self.runPhenom)
                     
                 }
                 
             }
+            
+        }
+        
+    }
+    
+    func rollSuccess(phenomOn: Bool) {
+        
+        var phenomCheck = phenomOn
+        
+        if phenomCheck == true {
+            
+            isPhenom = numberGenerator(self.phenomProbability)
+            
+            if isPhenom >= 1 {
+                
+                changePlane(0.3, direction: -50, planeOrder: 0)
+                currentPlane++
+                
+            } else {
+                
+                changePlane(0.3, direction: -50, planeOrder: 2)
+                
+            }
+            
+        } else {
+            
+            changePlane(0.3, direction: -50, planeOrder: 0)
+            currentPlane++
             
         }
         
@@ -268,7 +299,7 @@ class HomeView: UIViewController {
         phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
         phenomSliderView.alpha = 0
         
-        spring (0.5){
+        spring (0.5) {
             
             let scale = CGAffineTransformMakeScale(1, 1)
             let translate = CGAffineTransformMakeTranslation(0, 0)
@@ -282,8 +313,23 @@ class HomeView: UIViewController {
     
     @IBAction func hideSliderButtonDidPress(sender: AnyObject) {
         
-        phenomSliderView.hidden = true
         hideSliderButton.hidden = true
+        
+        let scale = CGAffineTransformMakeScale(1, 1)
+        let translate = CGAffineTransformMakeTranslation(0, 0)
+        
+        phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+        phenomSliderView.alpha = 1
+        
+        spring (0.5) {
+            
+            let scale = CGAffineTransformMakeScale(0.3, 0.3)
+            let translate = CGAffineTransformMakeTranslation(0, -50)
+            
+            self.phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+            self.phenomSliderView.alpha = 0
+            
+        }
         
     }
     
@@ -291,9 +337,25 @@ class HomeView: UIViewController {
         
         var sliderValue = Int(phenomChanceSlider.value)
         
+        runPhenom = true
+        
         phenomChanceLabel.text = "1 in " + "\(sliderValue)"
         
         phenomProbability = sliderValue
+        
+        if sliderValue == 1 {
+            
+            runPhenom = false
+            
+            phenomChanceLabel.text = "Off"
+            
+        }
+    }
+    
+    @IBAction func currentPlaneButtonDidPress(sender: AnyObject) {
+        
+        changePlane(0.5, direction: -50, planeOrder: 3)
+        
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
