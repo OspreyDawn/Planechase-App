@@ -8,14 +8,18 @@
 
 import UIKit
 
-class HomeView: UIViewController {
+class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var backgroundMaskView: UIView!
     @IBOutlet weak var planarDieMaskView: UIView!
     @IBOutlet weak var planarCardView: UIView!
+    @IBOutlet weak var planarCounterView: UIView!
     @IBOutlet weak var cardSelectView: UIView!
     @IBOutlet weak var cardListView: UIView!
+    @IBOutlet weak var cardListTableView: UITableView!
+    @IBOutlet weak var planarCounterLabel: UILabel!
+    @IBOutlet weak var counterCountLabel: UILabel!
     @IBOutlet weak var cardPreviewImageView: UIImageView!
     @IBOutlet weak var planarImageView: UIImageView!
     @IBOutlet weak var planarDieImageView: UIImageView!
@@ -29,6 +33,8 @@ class HomeView: UIViewController {
     @IBOutlet weak var cardSelectButton: UIButton!
     @IBOutlet weak var cardSelectDoneButton: UIButton!
     @IBOutlet weak var hideSliderButton: UIButton!
+    @IBOutlet weak var increaseCounterButton: UIButton!
+    @IBOutlet weak var decreaseCounterButton: UIButton!
     @IBOutlet weak var phenomChanceLabel: UILabel!
     
     var animator : UIDynamicAnimator!
@@ -39,6 +45,7 @@ class HomeView: UIViewController {
     var number = 0
     var order = [Int]()
     var translateFrom = CGFloat()
+    var counterCount = Int()
     var phenomProbability = Int()
     var isPhenom = 1
     var currentPlane = 0
@@ -397,6 +404,72 @@ class HomeView: UIViewController {
         
     }
     
+    func counterTracker(counterType: String) {
+        
+        counterCount = 0
+        counterCountLabel.text = "\(counterCount)"
+        
+        planarCounterView.hidden = false
+        planarCounterLabel.text = "\(counterType) Counters"
+        
+    }
+    
+    func showCounterTracker(planeName: String) {
+        
+        if planeName == "aretopolis" {
+            
+            counterTracker("Scroll")
+        
+        } else if planeName == "kilnspire district" {
+            
+            counterTracker("Charge")
+            
+        } else if planeName == "mount keralia" {
+            
+            counterTracker("Pressure")
+            
+        } else if planeName == "naar isle" {
+            
+            counterTracker("Flame")
+            
+        } else {
+            
+            planarCounterView.hidden = true
+            
+        }
+    }
+    
+    @IBAction func increaseCounterDidPress(sender: AnyObject) {
+        
+        counterCount++
+        counterCountLabel.text = "\(counterCount)"
+        
+        if getCardName(order[number]) == "aretopolis" && counterCount == 10 {
+            
+            self.rollPlaneswalk(self.runPhenom)
+            
+        }
+        
+        decreaseCounterButton.enabled = true
+        print(counterCount)
+        
+    }
+    
+    @IBAction func decreaseCounterDidPress(sender: AnyObject) {
+        
+        counterCount--
+        counterCountLabel.text = "\(counterCount)"
+        
+        print(counterCount)
+        
+        if counterCount == 0 {
+            
+            decreaseCounterButton.enabled = false
+            
+        }
+        
+    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
     }
@@ -411,10 +484,13 @@ class HomeView: UIViewController {
         insertBlurView(backgroundMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(planarDieMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(cardSelectView, UIBlurEffectStyle.Dark)
+        insertBlurView(planarCounterView, UIBlurEffectStyle.Dark)
         
         animator = UIDynamicAnimator(referenceView: view)
         
         planarCardView.alpha = 0
+        
+        cardListTableView.separatorColor = UIColor(white: 1, alpha: 0.3)
         
     }
     
@@ -434,12 +510,39 @@ class HomeView: UIViewController {
             
         } else {
             
+            showCounterTracker(getCardName(order[number]))
+            
             planarImageView.image = UIImage(named: getCardName(order[number]) + ".hq")
             backgroundImageView.image = UIImage(named: getCardName(order[number]) + ".crop.hq")
             
         }
         
         planarCardView.alpha = 1
+        
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return cardList.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell()
+        
+        cell.textLabel?.text = cardList[indexPath.row].capitalizedString
+        cell.textLabel?.textColor = UIColor(white: 1, alpha: 0.7)
+        
+        cell.backgroundColor = UIColor(white: 0, alpha: 0)
+        cell.tintColor = UIColor(white: 1, alpha: 0.7)
+        
+        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        cardPreviewImageView.image = UIImage(named: cardList[indexPath.row] + ".hq")
         
     }
     

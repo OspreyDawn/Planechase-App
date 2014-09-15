@@ -83,6 +83,56 @@
                                             <action selector="rollDieButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4la-4B-Ph6"/>
                                         </connections>
                                     </button>
+                                    <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" id="d1F-h6-65P">
+                                        <rect key="frame" x="731" y="211" width="87" height="185"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ZWn-EG-66z">
+                                                <rect key="frame" x="0.0" y="0.0" width="87" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                                <state key="normal" title="+">
+                                                    <color key="titleColor" red="1" green="1" blue="1" alpha="0.70000000000000007" colorSpace="calibratedRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="increaseCounterDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="yRw-UQ-yhT"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="xlm-cf-ZZK">
+                                                <rect key="frame" x="0.0" y="145" width="87" height="40"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                                <state key="normal" title="-">
+                                                    <color key="titleColor" red="1" green="1" blue="1" alpha="0.70000000000000007" colorSpace="calibratedRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="decreaseCounterDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4ZZ-Bi-hy3"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pressure Counters" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="F5C-mQ-mE7">
+                                                <rect key="frame" x="6" y="105" width="75" height="34"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MRw-a1-oAQ">
+                                                <rect key="frame" x="8" y="41" width="70" height="68"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="59"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="7"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
@@ -163,10 +213,17 @@
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="768"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
-                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="TTb-fj-wfh">
-                                                <rect key="frame" x="0.0" y="101" width="320" height="667"/>
+                                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" indicatorStyle="white" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="TTb-fj-wfh">
+                                                <rect key="frame" x="0.0" y="100" width="320" height="668"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="backgroundColor" white="1" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                <color key="tintColor" red="0.050980392156862744" green="0.47843137254901963" blue="0.99607843137254903" alpha="1" colorSpace="calibratedRGB"/>
+                                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <sections/>
+                                                <connections>
+                                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="brt-Wi-Cdm"/>
+                                                    <outlet property="delegate" destination="BYZ-38-t0r" id="um3-wG-Hwj"/>
+                                                </connections>
                                             </tableView>
                                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="DKT-FA-PtI">
                                                 <rect key="frame" x="20" y="46" width="280" height="29"/>
@@ -198,19 +255,25 @@
                     <connections>
                         <outlet property="backgroundImageView" destination="iiw-IP-d8d" id="AiC-VU-dTm"/>
                         <outlet property="backgroundMaskView" destination="T6N-IL-Mq6" id="W3P-TC-Rf6"/>
+                        <outlet property="cardListTableView" destination="TTb-fj-wfh" id="gHE-fa-cmf"/>
                         <outlet property="cardListView" destination="Vn8-SE-vog" id="hR4-uy-IAa"/>
                         <outlet property="cardPreviewImageView" destination="WEa-Nk-nrt" id="giA-nx-bio"/>
                         <outlet property="cardSelectButton" destination="zou-o4-qAm" id="Tvs-wa-0Eg"/>
                         <outlet property="cardSelectDoneButton" destination="fCw-un-WY6" id="4Tj-tm-fcX"/>
                         <outlet property="cardSelectView" destination="LTF-Sg-Fp9" id="cXP-LQ-fcd"/>
+                        <outlet property="counterCountLabel" destination="MRw-a1-oAQ" id="AyE-BD-ez0"/>
                         <outlet property="currentPlaneButton" destination="aDG-ak-lol" id="rZQ-IF-RuV"/>
+                        <outlet property="decreaseCounterButton" destination="xlm-cf-ZZK" id="IaT-1I-Q2p"/>
                         <outlet property="hideSliderButton" destination="T0g-nG-Xvr" id="lOU-Dx-w7O"/>
+                        <outlet property="increaseCounterButton" destination="ZWn-EG-66z" id="kx8-OW-oph"/>
                         <outlet property="phenomChanceButton" destination="Ezf-bd-hwN" id="Xx9-sn-oah"/>
                         <outlet property="phenomChanceLabel" destination="nOu-ef-Ve0" id="cJR-hU-L3L"/>
                         <outlet property="phenomChanceSlider" destination="mjA-X2-O3e" id="44O-FR-Tc1"/>
                         <outlet property="phenomSliderImageView" destination="x55-KD-q3A" id="PIz-eT-8n4"/>
                         <outlet property="phenomSliderView" destination="H8f-de-HZz" id="g1u-0e-GA3"/>
                         <outlet property="planarCardView" destination="DNy-Eu-8Gz" id="hfE-af-D5P"/>
+                        <outlet property="planarCounterLabel" destination="F5C-mQ-mE7" id="Gpo-Zz-jll"/>
+                        <outlet property="planarCounterView" destination="d1F-h6-65P" id="z7J-lo-dUx"/>
                         <outlet property="planarDieImageView" destination="b1V-eQ-Bh7" id="Wxg-5R-lvE"/>
                         <outlet property="planarDieMaskView" destination="pqy-tT-fs2" id="BW6-FE-poO"/>
                         <outlet property="planarImageView" destination="Pub-Pr-auJ" id="yyk-3L-jg3"/>
