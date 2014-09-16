@@ -35,6 +35,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var hideSliderButton: UIButton!
     @IBOutlet weak var increaseCounterButton: UIButton!
     @IBOutlet weak var decreaseCounterButton: UIButton!
+    @IBOutlet weak var cardTypeControl: UISegmentedControl!
     @IBOutlet weak var phenomChanceLabel: UILabel!
     
     var animator : UIDynamicAnimator!
@@ -50,6 +51,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var isPhenom = 1
     var currentPlane = 0
     var runPhenom = Bool()
+    var cardListType = cardList
     
     @IBAction func handleGesture(sender: AnyObject) {
         
@@ -112,6 +114,9 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     func refreshView() {
         
         currentPlaneButton.hidden = true
+        rollDieButton.enabled = true
+        increaseCounterButton.enabled = true
+        decreaseCounterButton.enabled = true
         
         animator.removeAllBehaviors()
         planarCardView.center = CGPoint(x: view.center.x, y: view.center.y + 25)
@@ -127,6 +132,9 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         if number < currentPlane {
             
             currentPlaneButton.hidden = false
+            rollDieButton.enabled = false
+            increaseCounterButton.enabled = false
+            decreaseCounterButton.enabled = false
             
         }
         
@@ -382,6 +390,26 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    @IBAction func cardTypeControlDidPress(sender: AnyObject) {
+        
+        switch cardTypeControl.selectedSegmentIndex {
+            
+        case 0:
+            
+            cardListType = cardList
+            
+        case 1:
+            
+            cardListType = phenomList
+            
+        default:
+            
+            break
+            
+        }
+        
+    }
+    
     @IBAction func cardSelectDoneDidPress(sender: AnyObject) {
         
         cardSelectView.alpha = 1
@@ -451,7 +479,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         }
         
         decreaseCounterButton.enabled = true
-        print(counterCount)
         
     }
     
@@ -459,8 +486,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         counterCount--
         counterCountLabel.text = "\(counterCount)"
-        
-        print(counterCount)
         
         if counterCount == 0 {
             
@@ -484,7 +509,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         insertBlurView(backgroundMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(planarDieMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(cardSelectView, UIBlurEffectStyle.Dark)
-        insertBlurView(planarCounterView, UIBlurEffectStyle.Dark)
+        insertBlurView(planarCounterView, UIBlurEffectStyle.Light)
         
         animator = UIDynamicAnimator(referenceView: view)
         
@@ -501,7 +526,11 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         animator = UIDynamicAnimator(referenceView: view)
         
+        showCounterTracker(getCardName(order[number]))
+        
         if isPhenom == 0 {
+            
+            planarCounterView.hidden = true
             
             var phenomSelect = numberGenerator(phenomList.count)
             
@@ -509,8 +538,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
             backgroundImageView.image = UIImage(named: getCard(phenomList)[phenomSelect] + ".crop.hq")
             
         } else {
-            
-            showCounterTracker(getCardName(order[number]))
             
             planarImageView.image = UIImage(named: getCardName(order[number]) + ".hq")
             backgroundImageView.image = UIImage(named: getCardName(order[number]) + ".crop.hq")
@@ -522,14 +549,14 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return cardList.count
+        return cardListType.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = UITableViewCell()
         
-        cell.textLabel?.text = cardList[indexPath.row].capitalizedString
+        cell.textLabel?.text = cardListType[indexPath.row].capitalizedString
         cell.textLabel?.textColor = UIColor(white: 1, alpha: 0.7)
         
         cell.backgroundColor = UIColor(white: 0, alpha: 0)
@@ -542,7 +569,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        cardPreviewImageView.image = UIImage(named: cardList[indexPath.row] + ".hq")
+        cardPreviewImageView.image = UIImage(named: cardListType[indexPath.row] + ".hq")
         
     }
     

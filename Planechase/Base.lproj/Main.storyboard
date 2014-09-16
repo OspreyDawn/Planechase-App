@@ -115,14 +115,14 @@
                                                 <rect key="frame" x="6" y="105" width="75" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="14"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MRw-a1-oAQ">
                                                 <rect key="frame" x="8" y="41" width="70" height="68"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="59"/>
-                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -233,6 +233,9 @@
                                                     <segment title="Phenomenons"/>
                                                 </segments>
                                                 <color key="tintColor" white="1" alpha="0.70000000000000007" colorSpace="calibratedWhite"/>
+                                                <connections>
+                                                    <action selector="cardTypeControlDidPress:" destination="BYZ-38-t0r" eventType="valueChanged" id="6gG-0E-efa"/>
+                                                </connections>
                                             </segmentedControl>
                                         </subviews>
                                     </view>
@@ -261,6 +264,7 @@
                         <outlet property="cardSelectButton" destination="zou-o4-qAm" id="Tvs-wa-0Eg"/>
                         <outlet property="cardSelectDoneButton" destination="fCw-un-WY6" id="4Tj-tm-fcX"/>
                         <outlet property="cardSelectView" destination="LTF-Sg-Fp9" id="cXP-LQ-fcd"/>
+                        <outlet property="cardTypeControl" destination="DKT-FA-PtI" id="ccP-Zs-ies"/>
                         <outlet property="counterCountLabel" destination="MRw-a1-oAQ" id="AyE-BD-ez0"/>
                         <outlet property="currentPlaneButton" destination="aDG-ak-lol" id="rZQ-IF-RuV"/>
                         <outlet property="decreaseCounterButton" destination="xlm-cf-ZZK" id="IaT-1I-Q2p"/>
