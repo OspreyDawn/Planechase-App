@@ -6,10 +6,15 @@
 //  Copyright (c) 2014 Max O'Brien. All rights reserved.
 //
 
+/*
+    Variable Convention: firstSecond
+    Constant Convention: FirstSecond
+*/
+
 import UIKit
 
 class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var backgroundMaskView: UIView!
     @IBOutlet weak var planarDieMaskView: UIView!
@@ -38,6 +43,15 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var cardTypeControl: UISegmentedControl!
     @IBOutlet weak var phenomChanceLabel: UILabel!
     
+    enum DeckDirection: Int {
+        
+        case NewCard = 0
+        case PreviousCard, PhenomCard, ReturnToCurrent
+        
+    }
+    
+    let GravityDirection: Float = 50
+    
     var animator : UIDynamicAnimator!
     var attachmentBehavior : UIAttachmentBehavior!
     var gravityBehavior : UIGravityBehavior!
@@ -53,63 +67,96 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var runPhenom = Bool()
     var cardListType = cardList
     
-    @IBAction func handleGesture(sender: AnyObject) {
+    /*
+        gestureBegin removes the snap behaviour of the planarCardView when it is
+        touched and offsets the origin based on where it is touched.
+    */
+    
+    func gestureBegin(location: CGPoint, _ currentView: UIView, box: CGPoint) {
         
-        let location = sender.locationInView(view)
-        let myView = planarCardView
-        let boxLocation = sender.locationInView(planarCardView)
+        animator.removeBehavior(snapBehavior)
         
-        if sender.state == UIGestureRecognizerState.Began {
+        let CenterOffset = UIOffsetMake(box.x - CGRectGetMidX(currentView.bounds), box.y - CGRectGetMidY(currentView.bounds))
+        
+        attachmentBehavior = UIAttachmentBehavior(item: currentView, offsetFromCenter: CenterOffset, attachedToAnchor: location)
+        attachmentBehavior.frequency = 0
+        
+        animator.addBehavior(attachmentBehavior)
+        
+    }
+    
+    /*
+        gestureChanged moves the planarCardView when it is dragged.
+    */
+    
+    func gestureChanged(location: CGPoint) {
+        
+        attachmentBehavior.anchorPoint = location
+        
+    }
+    
+    /*
+        gestureEnded enables the snap behaviour again when the planarCardView is no 
+        longer touched and checks whether to change the card based on where it is at
+        the point it is detached and what position the shown card is.
+    */
+    
+    func gestureEnded( currentView: UIView, _ translation: CGPoint ) {
+        
+        let StandardTimeDelay = 0.5
+        
+        snapBehavior = UISnapBehavior(item: currentView, snapToPoint: CGPoint(x: view.center.x, y: view.center.y + 25))
+        animator.removeBehavior(attachmentBehavior)
+        animator.addBehavior(snapBehavior)
+        
+        if isPhenom >= 1 {
             
-            animator.removeBehavior(snapBehavior)
-            
-            let centerOffset = UIOffsetMake(boxLocation.x - CGRectGetMidX(myView.bounds), boxLocation.y - CGRectGetMidY(myView.bounds))
-            
-            attachmentBehavior = UIAttachmentBehavior(item: myView, offsetFromCenter: centerOffset, attachedToAnchor: location)
-            attachmentBehavior.frequency = 0
-            
-            animator.addBehavior(attachmentBehavior)
-            
-        }
-            
-        else if sender.state == UIGestureRecognizerState.Changed {
-            
-            attachmentBehavior.anchorPoint = location
-            
-        }
-            
-        else if sender.state == UIGestureRecognizerState.Ended {
-            
-            animator.removeBehavior(attachmentBehavior)
-            
-            snapBehavior = UISnapBehavior(item: myView, snapToPoint: CGPoint(x: view.center.x, y: view.center.y + 25))
-            animator.addBehavior(snapBehavior)
-            
-            let translation = sender.translationInView(view)
-            
-            if isPhenom >= 1 {
+            if translation.x < -500 && number < currentPlane {
                 
-                if translation.x < -500 && number < currentPlane {
-                    
-                    changePlane(0.5, direction: -50, planeOrder: 0)
-                    
-                } else if translation.x > 500 && number > 0 {
-                    
-                    changePlane(0.5, direction: 50, planeOrder: 1)
-                    
-                }
+                changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NewCard)
                 
-            } else if isPhenom == 0 && translation.x < -500 {
+            } else if translation.x > 500 && number > 0 {
                 
-                changePlane(0.5, direction: -50, planeOrder: 0)
-                
-                isPhenom = 1
-                currentPlane++
+                changePlane(StandardTimeDelay, GravityDirection, DeckDirection.PreviousCard)
                 
             }
+            
+        } else if isPhenom == 0 && translation.x < -500 {
+            
+            changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NewCard)
+            
+            isPhenom = 1
+            currentPlane++
+            
+        }
+    }
+    
+    /*
+        handleGesture parses in the gesture states and executes them based on what their
+        inputs are.
+    */
+    
+    @IBAction func handleGesture(sender: AnyObject) {
+        
+        let State: UIGestureRecognizerState = sender.state
+        
+        switch State {
+        case UIGestureRecognizerState.Began:
+            gestureBegin(sender.locationInView(view), planarCardView, box: sender.locationInView(planarCardView))
+        case UIGestureRecognizerState.Changed:
+            gestureChanged(sender.locationInView(view))
+        case UIGestureRecognizerState.Ended:
+            gestureEnded(planarCardView, sender.translationInView(view))
+        default:
+            break // Do Nothing
         }
         
     }
+    
+    /*
+        refreshView resets the view and sets what features are enabled based on the
+        refreshed view's card type and position.
+    */
     
     func refreshView() {
         
@@ -140,114 +187,121 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
-    func changePlane(timeDelay: Double, direction: CGFloat, planeOrder: Int) {
+    /*
+        changePlane changes the card based enabling specific use cases based on the 
+        user's input.
+    */
+    
+    func changePlane(timeDelay: Double, _ direction: Float, _ planeOrder: DeckDirection) {
         
-        var planeTo = planeOrder
-        
-        animator.removeAllBehaviors()
+        let OffScreenOffset: CGFloat = 2000
         
         var gravity = UIGravityBehavior(items: [planarCardView])
-        gravity.gravityDirection = CGVectorMake(direction, 0)
+        gravity.gravityDirection = CGVectorMake(CGFloat(direction), 0)
+        animator.removeAllBehaviors()
         animator.addBehavior(gravity)
         
         delay (timeDelay) {
             self.refreshView()
         }
         
-        if planeTo == 0 {
+        switch planeOrder {
             
+        case .NewCard:
             number++
-            translateFrom = 2000
+            translateFrom = OffScreenOffset
             
-            
-        } else if planeTo == 1 {
-            
+        case .PreviousCard:
             number--
-            translateFrom = -2000
+            translateFrom = -OffScreenOffset
             
-        } else if planeTo == 2 {
+        case .PhenomCard:
+            translateFrom = OffScreenOffset
             
-            translateFrom = 2000
-            
-        } else if planeTo == 3 {
-            
+        case .ReturnToCurrent:
             number = currentPlane
-            translateFrom = 2000
+            translateFrom = OffScreenOffset
             
         }
         
     }
+    
+    /*
+        transitionPlane animates a new card into view based a specified direction.
+    */
     
     func transitionPlane(direction: CGFloat) {
         
-        let scale = CGAffineTransformMakeScale(0.5, 0.5)
-        let translate = CGAffineTransformMakeTranslation(direction, 0)
+        let Scale = CGAffineTransformMakeScale(0.5, 0.5)
+        let Translate = CGAffineTransformMakeTranslation(direction, 0)
         
-        planarCardView.transform = CGAffineTransformConcat(scale, translate)
+        planarCardView.transform = CGAffineTransformConcat(Scale, Translate)
         
         spring(0.5){
             
-            let scale = CGAffineTransformMakeScale(1, 1)
-            let translate = CGAffineTransformMakeTranslation(0, 0)
+            let Scale = CGAffineTransformMakeScale(1, 1)
+            let Translate = CGAffineTransformMakeTranslation(0, 0)
             
-            self.planarCardView.transform = CGAffineTransformConcat(scale, translate)
+            self.planarCardView.transform = CGAffineTransformConcat(Scale, Translate)
             
         }
         
     }
     
+    /*
+        rollDieButtonDidPress initiates the roll of the planar die and executes actions
+        based on its result.
+    */
+    
     @IBAction func rollDieButtonDidPress(sender: AnyObject) {
+        
+        let StandardTimeDelay = 0.5
+        let SpringTimeDuration = 0.5
         
         var rollDie = numberGenerator(6)
         var dieResult = String()
         
-        if rollDie >= 2 {
-        
-            dieResult = "img-sq_pd-b_180"
-        
-        } else if rollDie == 1 {
-        
-            dieResult = "img-sq_pd-c_180"
-        
-        } else if rollDie == 0 {
-        
-            dieResult = "img-sq_pd-p_180"
+        switch rollDie {
+        case 0: dieResult = "img-sq_pd-p_180"
+        case 1: dieResult = "img-sq_pd-c_180"
+        default: dieResult = "img-sq_pd-b_180"
         
         }
         
         planarDieMaskView.alpha = 0
         planarDieMaskView.hidden = false
-        
         planarDieImageView.hidden = true
         
-        spring(0.5) {
+        spring(SpringTimeDuration) {
             
             self.planarDieMaskView.alpha = 1
         
         }
         
-        delay (0.5) {
+        delay (StandardTimeDelay) {
             
             self.planarDieImageView.alpha = 0
             self.planarDieImageView.hidden = false
             self.planarDieImageView.image = UIImage(named: dieResult)
             
-            spring(0.5) {
+            spring(SpringTimeDuration) {
+                
                 self.planarDieImageView.alpha = 1
+            
             }
             
         }
         
         delay (2.5) {
             
-            spring(0.5) {
+            spring(SpringTimeDuration) {
                 
                 self.planarDieMaskView.alpha = 0
                 self.planarDieImageView.alpha = 0
                 
             }
             
-            delay (0.5) {
+            delay (StandardTimeDelay) {
                 
                 self.planarDieMaskView.hidden = true
                 
@@ -263,6 +317,12 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    /*
+        rollPlaneswalk is specific to the planeswalk result of the planar die. If the
+        result occurs, the card is automatically changed initialising either a 
+        phenomenon or a new card.
+    */
+    
     func rollPlaneswalk(phenomOn: Bool) {
         
         var phenomCheck = phenomOn
@@ -273,18 +333,18 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
             
             if isPhenom >= 1 {
                 
-                changePlane(0.3, direction: -50, planeOrder: 0)
+                changePlane(0.3, -GravityDirection, DeckDirection.NewCard)
                 currentPlane++
                 
             } else {
                 
-                changePlane(0.3, direction: -50, planeOrder: 2)
+                changePlane(0.3, -GravityDirection, DeckDirection.PhenomCard)
                 
             }
             
         } else {
             
-            changePlane(0.3, direction: -50, planeOrder: 0)
+            changePlane(0.3, -50, DeckDirection.NewCard)
             currentPlane++
             isPhenom = 1
             
@@ -314,18 +374,18 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         phenomSliderView.hidden = false
         hideSliderButton.hidden = false
         
-        let scale = CGAffineTransformMakeScale(0.3, 0.3)
-        let translate = CGAffineTransformMakeTranslation(0, -50)
+        let Scale = CGAffineTransformMakeScale(0.3, 0.3)
+        let Translate = CGAffineTransformMakeTranslation(0, -50)
         
-        phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+        phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
         phenomSliderView.alpha = 0
         
         spring (0.5) {
             
-            let scale = CGAffineTransformMakeScale(1, 1)
-            let translate = CGAffineTransformMakeTranslation(0, 0)
+            let Scale = CGAffineTransformMakeScale(1, 1)
+            let Translate = CGAffineTransformMakeTranslation(0, 0)
             
-            self.phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+            self.phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
             self.phenomSliderView.alpha = 1
             
         }
@@ -336,23 +396,28 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         hideSliderButton.hidden = true
         
-        let scale = CGAffineTransformMakeScale(1, 1)
-        let translate = CGAffineTransformMakeTranslation(0, 0)
+        let Scale = CGAffineTransformMakeScale(1, 1)
+        let Translate = CGAffineTransformMakeTranslation(0, 0)
         
-        phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+        phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
         phenomSliderView.alpha = 1
         
         spring (0.5) {
             
-            let scale = CGAffineTransformMakeScale(0.3, 0.3)
-            let translate = CGAffineTransformMakeTranslation(0, -50)
+            let Scale = CGAffineTransformMakeScale(0.3, 0.3)
+            let Translate = CGAffineTransformMakeTranslation(0, -50)
             
-            self.phenomSliderView.transform = CGAffineTransformConcat(scale, translate)
+            self.phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
             self.phenomSliderView.alpha = 0
             
         }
         
     }
+    
+    /*
+        phenomChanceSliderDidChange changes the chances phenomenoms have to appear based
+        user input
+    */
     
     @IBAction func phenomChanceSliderDidChange(sender: AnyObject) {
         
@@ -392,22 +457,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBAction func cardTypeControlDidPress(sender: AnyObject) {
         
-        switch cardTypeControl.selectedSegmentIndex {
-            
-        case 0:
-            
-            cardListType = cardList
-            
-        case 1:
-            
-            cardListType = phenomList
-            
-        default:
-            
-            break
-            
-        }
-        
     }
     
     @IBAction func cardSelectDoneDidPress(sender: AnyObject) {
@@ -426,9 +475,17 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    
+    /*
+        currentPlaneButtonDidPress returns players back to the most current plane if
+        they have been browsing where they have been.
+    */
+    
     @IBAction func currentPlaneButtonDidPress(sender: AnyObject) {
         
-        changePlane(0.5, direction: -50, planeOrder: 3)
+        let StandardTimeDelay = 0.5
+        
+        changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.ReturnToCurrent)
         
     }
     
@@ -441,6 +498,11 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         planarCounterLabel.text = "\(counterType) Counters"
         
     }
+    
+    /*
+        showCounterTracker is shown when specific cards are revealed and fills in the
+        relevant name into the counter tracker label.
+    */
     
     func showCounterTracker(planeName: String) {
         
@@ -522,6 +584,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(Bool())
         
+        // Set the incoming direction of the new view based on what card will be shown next.
         transitionPlane(translateFrom)
         
         animator = UIDynamicAnimator(referenceView: view)
@@ -548,24 +611,33 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
+    /*
+        tableView -> Int gives the table rows based on the number of items in a defined array.
+    */
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return cardListType.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = UITableViewCell()
+        let Cell = UITableViewCell()
         
-        cell.textLabel?.text = cardListType[indexPath.row].capitalizedString
-        cell.textLabel?.textColor = UIColor(white: 1, alpha: 0.7)
+        Cell.textLabel?.text = cardListType[indexPath.row].capitalizedString
+        Cell.textLabel?.textColor = UIColor(white: 1, alpha: 0.7)
         
-        cell.backgroundColor = UIColor(white: 0, alpha: 0)
-        cell.tintColor = UIColor(white: 1, alpha: 0.7)
+        Cell.backgroundColor = UIColor(white: 0, alpha: 0)
+        Cell.tintColor = UIColor(white: 1, alpha: 0.7)
         
-        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        Cell.accessoryType = UITableViewCellAccessoryType.Checkmark
         
-        return cell
+        return Cell
     }
+    
+    /*
+        tableView (didSelectRowAtIndexPath) changes the image of the cardImagePreviewView to
+        show the selected card.
+    */
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
