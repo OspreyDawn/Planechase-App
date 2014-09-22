@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 var cardList = [
     
     "academy at tolaria west",
@@ -96,17 +97,129 @@ var phenomList = [
     
 ]
 
-func cardCount() -> Int {
-    return cardList.count
-}
-
-func getCard(array: Array<String>) -> Array<String> {
-    return array
-}
-
-func getCardName(idx: Int) -> String {
+class CardDeck {
+    class Card {
+        
+        enum CardType { case Standard, Phenom }
+        
+        let name: String
+        let type: CardType
+        
+        let image: String
+        let backgroundImage: String
+        
+        init ( _ cname: String, _ ctype: CardType ) {
+            name = cname
+            type = ctype
+            image = name + ".hq"
+            backgroundImage = name + ".crop.hq"
+        }
+    }
     
-    return getCard(cardList)[idx]
+    var standardCards = [Card]()
+    var phenomCards = [Card]()
+    var drawnCards = [Card]()
+    
+    var phenomOn = true
+    var standardPosition = 0
+    var probability = 0
+    var currentViewedCard = 0
+
+    init (phenom: Int = 0) {
+
+        // Initialise the Card Deck, shuffle it, then draw the first card.
+        phenomProbability = phenom
+        
+        // Initialise Index Array of Cards
+        load(cardList, Card.CardType.Standard)
+        load(phenomList, Card.CardType.Phenom)
+        
+        shuffle()
+    }
+    
+    var phenomProbability: Int {
+        get { return probability }
+        set { if newValue == 1 {phenomOn = false}
+            probability = newValue
+        }
+    }
+
+    // Position onto the last drawn, or 'current' card
+    var currentCard: Card {
+        assert(!drawnCards.isEmpty)
+        currentViewedCard = drawnCards.count-1 // set to the last drawn card
+        return drawnCards[currentViewedCard]
+    }
+    
+    // Move to the next drawn card.
+    var nextCard: Card {
+        assert(!drawnCards.isEmpty)
+        if currentViewedCard < drawnCards.count-1 { currentViewedCard++ }
+            
+        return drawnCards[currentViewedCard]
+    }
+
+    // Move to the prevsious drawn card
+    var previousCard: Card {
+        assert(!drawnCards.isEmpty)
+        if 0 < currentViewedCard { currentViewedCard-- }
+            
+        return drawnCards[currentViewedCard]
+    }
+    
+    // Load the cards from an array of card string names
+    func load ( names: [String], _ cardType: CardDeck.Card.CardType ) {
+        // Initialise Index Array to size of Cards
+        for string in names {
+            switch cardType {
+            case .Standard:
+                standardCards.append(Card(string, cardType))
+            case .Phenom:
+                phenomCards.append(Card(string, cardType))
+            default:
+                assert(false) // We should never get here!
+            }
+        }
+    }
+    
+    // Draw a new card from the standard deck or draw a Phenom card
+    func drawNewCard () -> (newCard: Bool, card:Card)? {
+        if standardCards.count < standardPosition {
+            return nil
+        }
+        
+        let isPhenom = numberGenerator(self.phenomProbability) == 0
+        var nextCard = standardCards[standardPosition++]
+
+        if phenomOn && isPhenom && standardPosition > 1 {
+            nextCard = phenomCards[numberGenerator(phenomCards.count)]
+        }
+        
+        drawnCards.append(nextCard)
+        
+        return (isPhenom, nextCard)
+    }
+    
+    // Shuffle the card deck, reseting the drawn cards, and dealling a new card.
+    func shuffle () {
+        drawnCards = [] // empty the drawn cards
+        standardPosition = 0
+        currentViewedCard = 0
+        
+        let count = standardCards.count
+        assert(0 <= count) // Count should alsways be positive.
+        for index in 0 ..< count {
+            // Random int from 0 to index-1
+            let randomNumber = Int(arc4random_uniform(UInt32(count)))
+            
+            // Swap two array elements
+            let tmp = standardCards[index]
+            standardCards[index] = standardCards[randomNumber]
+            standardCards[randomNumber] = tmp
+        }
+        
+        drawNewCard()
+    }
 }
 
 func numberGenerator(chance: Int) -> Int {
@@ -115,31 +228,4 @@ func numberGenerator(chance: Int) -> Int {
     
     return randomNumber
     
-}
-
-func shuffleArray<T>(inout array: Array<T>) -> Array<T>
-{
-    for var index = array.count - 1; index > 0; index--
-    {
-        // Random int from 0 to index-1
-        var randomNumber = Int(arc4random_uniform(UInt32(index-1)))
-        
-        // Swap two array elements
-        // Notice '&' required as swap uses 'inout' parameters
-        swap(&array[index], &array[randomNumber])
-    }
-    return array
-}
-
-func cardOrder(cards: Int) -> Array<Int>
-{
-    var order = [Int]()
-    
-    // Initialise Index Array to size of Cards
-    for index in 0...(cards-1)
-    {
-        order.append(index)
-    }
-    // shuffle the card order
-    return shuffleArray(&order)
 }

@@ -46,7 +46,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     enum DeckDirection: Int {
         
         case NewCard = 0
-        case PreviousCard, PhenomCard, ReturnToCurrent
+        case NextCard, PreviousCard, PhenomCard, ReturnToCurrent
         
     }
     
@@ -57,15 +57,12 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var gravityBehavior : UIGravityBehavior!
     var snapBehavior : UISnapBehavior!
     
-    var number = 0
     var order = [Int]()
     var translateFrom = CGFloat()
     var counterCount = Int()
-    var phenomProbability = Int()
-    var isPhenom = 1
-    var currentPlane = 0
-    var runPhenom = Bool()
     var cardListType = cardList
+    
+    var deck = CardDeck(phenom: 10)
     
     /*
         gestureBegin removes the snap behaviour of the planarCardView when it is
@@ -109,26 +106,31 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         animator.removeBehavior(attachmentBehavior)
         animator.addBehavior(snapBehavior)
         
-        if isPhenom >= 1 {
+         if deck.drawnCards[deck.currentViewedCard].type == CardDeck.Card.CardType.Phenom {
             
-            if translation.x < -500 && number < currentPlane {
+            if translation.x < -500 {
                 
                 changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NewCard)
                 
-            } else if translation.x > 500 && number > 0 {
+            } else if translation.x > 500 && deck.currentViewedCard > 0 {
                 
                 changePlane(StandardTimeDelay, GravityDirection, DeckDirection.PreviousCard)
                 
             }
             
-        } else if isPhenom == 0 && translation.x < -500 {
-            
-            changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NewCard)
-            
-            isPhenom = 1
-            currentPlane++
-            
+        } else {
+        
+            if translation.x < -500 && deck.currentViewedCard < deck.standardPosition - 1 {
+                
+                changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NextCard)
+                
+            } else if translation.x > 500 && deck.currentViewedCard > 0 {
+                
+                changePlane(StandardTimeDelay, GravityDirection, DeckDirection.PreviousCard)
+                
+            }
         }
+        
     }
     
     /*
@@ -168,15 +170,15 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         animator.removeAllBehaviors()
         planarCardView.center = CGPoint(x: view.center.x, y: view.center.y + 25)
         
-        if number > cardList.count - 1 {
+        if deck.currentViewedCard > deck.standardCards.count - 1 {
             
-            order = shuffleArray(&order)
-            number = 0
+            deck.shuffle()
+            
         }
         
         viewDidAppear(true)
         
-        if number < currentPlane {
+        if deck.currentViewedCard < deck.standardPosition - 1 {
             
             currentPlaneButton.hidden = false
             rollDieButton.enabled = false
@@ -208,18 +210,23 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         switch planeOrder {
             
         case .NewCard:
-            number++
+            deck.drawNewCard()
+            translateFrom = OffScreenOffset
+            self.deck.currentViewedCard++
+            
+        case .NextCard:
+            deck.nextCard
             translateFrom = OffScreenOffset
             
         case .PreviousCard:
-            number--
+            deck.previousCard
             translateFrom = -OffScreenOffset
             
         case .PhenomCard:
             translateFrom = OffScreenOffset
             
         case .ReturnToCurrent:
-            number = currentPlane
+            deck.currentCard
             translateFrom = OffScreenOffset
             
         }
@@ -307,7 +314,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 
                 if rollDie == 0 {
                     
-                    self.rollPlaneswalk(self.runPhenom)
+                    self.changePlane(StandardTimeDelay, -self.GravityDirection, DeckDirection.NewCard)
                     
                 }
                 
@@ -317,55 +324,13 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
-    /*
-        rollPlaneswalk is specific to the planeswalk result of the planar die. If the
-        result occurs, the card is automatically changed initialising either a 
-        phenomenon or a new card.
-    */
-    
-    func rollPlaneswalk(phenomOn: Bool) {
-        
-        var phenomCheck = phenomOn
-        
-        if phenomCheck == true {
-            
-            isPhenom = numberGenerator(self.phenomProbability)
-            
-            if isPhenom >= 1 {
-                
-                changePlane(0.3, -GravityDirection, DeckDirection.NewCard)
-                currentPlane++
-                
-            } else {
-                
-                changePlane(0.3, -GravityDirection, DeckDirection.PhenomCard)
-                
-            }
-            
-        } else {
-            
-            changePlane(0.3, -50, DeckDirection.NewCard)
-            currentPlane++
-            isPhenom = 1
-            
-        }
-        
-    }
-    
-    func shuffleCards() {
-        
-        order = shuffleArray(&order)
-        number = 0
-        currentPlane = 0
-        isPhenom = 1
-        currentPlaneButton.hidden = true
-        viewDidAppear(true)
-        
-    }
+
     
     @IBAction func reshuffleButtonDidPress(sender: AnyObject) {
         
-        shuffleCards()
+        deck.shuffle()
+        currentPlaneButton.hidden = true
+        viewDidAppear(true)
 
     }
     
@@ -423,15 +388,11 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         var sliderValue = Int(phenomChanceSlider.value)
         
-        runPhenom = true
-        
         phenomChanceLabel.text = "1 in " + "\(sliderValue)"
         
-        phenomProbability = sliderValue
+        deck.probability = sliderValue
         
         if sliderValue == 1 {
-            
-            runPhenom = false
             
             phenomChanceLabel.text = "Off"
             
@@ -506,27 +467,17 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func showCounterTracker(planeName: String) {
         
-        if planeName == "aretopolis" {
+        switch planeName {
             
-            counterTracker("Scroll")
-        
-        } else if planeName == "kilnspire district" {
+            case "aretopolis": counterTracker("Scroll")
+            case "kilnspire district": counterTracker("Charge")
+            case "mount keralia": counterTracker("Pressure")
+            case "naar isle": counterTracker("Flame")
             
-            counterTracker("Charge")
-            
-        } else if planeName == "mount keralia" {
-            
-            counterTracker("Pressure")
-            
-        } else if planeName == "naar isle" {
-            
-            counterTracker("Flame")
-            
-        } else {
-            
-            planarCounterView.hidden = true
+        default: planarCounterView.hidden = true
             
         }
+        
     }
     
     @IBAction func increaseCounterDidPress(sender: AnyObject) {
@@ -534,13 +485,14 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         counterCount++
         counterCountLabel.text = "\(counterCount)"
         
-        if getCardName(order[number]) == "aretopolis" && counterCount == 10 {
+        
+        if deck.drawnCards[deck.standardPosition - 1].name == "aretopolis" && counterCount == 10 {
             
-            self.rollPlaneswalk(self.runPhenom)
+            changePlane(0.5, -GravityDirection, DeckDirection.NewCard)
             
         }
         
-        decreaseCounterButton.enabled = true
+            decreaseCounterButton.enabled = true
         
     }
     
@@ -566,8 +518,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         UIApplication.sharedApplication().idleTimerDisabled = true
         
-        order = cardOrder(cardCount())
-        
         insertBlurView(backgroundMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(planarDieMaskView, UIBlurEffectStyle.Dark)
         insertBlurView(cardSelectView, UIBlurEffectStyle.Dark)
@@ -588,26 +538,16 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         transitionPlane(translateFrom)
         
         animator = UIDynamicAnimator(referenceView: view)
-        
-        showCounterTracker(getCardName(order[number]))
-        
-        if isPhenom == 0 {
             
-            planarCounterView.hidden = true
-            
-            var phenomSelect = numberGenerator(phenomList.count)
-            
-            planarImageView.image = UIImage(named: getCard(phenomList)[phenomSelect] + ".hq")
-            backgroundImageView.image = UIImage(named: getCard(phenomList)[phenomSelect] + ".crop.hq")
-            
-        } else {
-            
-            planarImageView.image = UIImage(named: getCardName(order[number]) + ".hq")
-            backgroundImageView.image = UIImage(named: getCardName(order[number]) + ".crop.hq")
-            
-        }
+        planarImageView.image = UIImage(named: deck.drawnCards[deck.currentViewedCard].image)
+        backgroundImageView.image = UIImage(named: deck.drawnCards[deck.currentViewedCard].backgroundImage)
         
         planarCardView.alpha = 1
+        
+        showCounterTracker(deck.drawnCards[deck.currentViewedCard].name)
+        
+        print(deck.currentViewedCard)
+        print(deck.standardPosition)
         
     }
     
