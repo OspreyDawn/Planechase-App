@@ -196,7 +196,7 @@ class CardDeck {
         }
         
         drawnCards.append(nextCard)
-        
+        currentViewedCard = drawnCards.count - 1
         return (isPhenom, nextCard)
     }
     

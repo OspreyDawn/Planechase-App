@@ -101,18 +101,19 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     func gestureEnded( currentView: UIView, _ translation: CGPoint ) {
         
         let StandardTimeDelay = 0.5
+        let ScreenOffset: CGFloat = 500
         
         snapBehavior = UISnapBehavior(item: currentView, snapToPoint: CGPoint(x: view.center.x, y: view.center.y + 25))
         animator.removeBehavior(attachmentBehavior)
         animator.addBehavior(snapBehavior)
         
-         if deck.drawnCards[deck.currentViewedCard].type == CardDeck.Card.CardType.Phenom {
+         if deck.drawnCards[deck.currentViewedCard].type == CardDeck.Card.CardType.Phenom && deck.currentViewedCard == deck.drawnCards.count - 1 {
             
-            if translation.x < -500 {
+            if translation.x < -ScreenOffset {
                 
                 changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NewCard)
                 
-            } else if translation.x > 500 && deck.currentViewedCard > 0 {
+            } else if translation.x > ScreenOffset && deck.currentViewedCard > 0 {
                 
                 changePlane(StandardTimeDelay, GravityDirection, DeckDirection.PreviousCard)
                 
@@ -120,11 +121,11 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
             
         } else {
         
-            if translation.x < -500 && deck.currentViewedCard < deck.standardPosition - 1 {
+            if translation.x < -ScreenOffset && deck.currentViewedCard < deck.standardPosition - 1 {
                 
                 changePlane(StandardTimeDelay, -GravityDirection, DeckDirection.NextCard)
                 
-            } else if translation.x > 500 && deck.currentViewedCard > 0 {
+            } else if translation.x > ScreenOffset && deck.currentViewedCard > 0 {
                 
                 changePlane(StandardTimeDelay, GravityDirection, DeckDirection.PreviousCard)
                 
@@ -212,7 +213,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         case .NewCard:
             deck.drawNewCard()
             translateFrom = OffScreenOffset
-            self.deck.currentViewedCard++
             
         case .NextCard:
             deck.nextCard
@@ -545,9 +545,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         planarCardView.alpha = 1
         
         showCounterTracker(deck.drawnCards[deck.currentViewedCard].name)
-        
-        print(deck.currentViewedCard)
-        print(deck.standardPosition)
         
     }
     
