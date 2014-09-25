@@ -57,12 +57,13 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var gravityBehavior : UIGravityBehavior!
     var snapBehavior : UISnapBehavior!
     
-    var order = [Int]()
     var translateFrom = CGFloat()
     var counterCount = Int()
-    var cardListType = cardList
     
     var deck = CardDeck(phenom: 10)
+    var cardListType = [Card]()
+    
+    
     
     /*
         gestureBegin removes the snap behaviour of the planarCardView when it is
@@ -107,7 +108,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         animator.removeBehavior(attachmentBehavior)
         animator.addBehavior(snapBehavior)
         
-         if deck.drawnCards[deck.currentViewedCard].type == CardDeck.Card.CardType.Phenom && deck.currentViewedCard == deck.drawnCards.count - 1 {
+         if deck.drawnCards[deck.currentViewedCard].type == Card.CardType.Phenom && deck.currentViewedCard == deck.drawnCards.count - 1 {
             
             if translation.x < -ScreenOffset {
                 
@@ -401,6 +402,9 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBAction func cardSelectButtonDidPress(sender: AnyObject) {
         
+        cardListType = deck.standardCards
+        cardListTableView.reloadData()
+        
         cardSelectView.hidden = false
         cardSelectView.alpha = 0
         cardListView.transform = CGAffineTransformMakeTranslation(-320, 0)
@@ -418,6 +422,16 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBAction func cardTypeControlDidPress(sender: AnyObject) {
         
+        switch cardTypeControl.selectedSegmentIndex {
+        case 0:
+            cardListType = deck.standardCards
+            cardListTableView.reloadData()
+        case 1:
+            cardListType = deck.phenomCards
+            cardListTableView.reloadData()
+        default:
+            break
+        }
     }
     
     @IBAction func cardSelectDoneDidPress(sender: AnyObject) {
@@ -556,19 +570,65 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         return cardListType.count
     }
     
+    var CheckButtonImage = UIImage()
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let Cell = UITableViewCell()
+        let CheckButton = UIButton(frame: CGRectMake(0, 0, 25, 25))
         
-        Cell.textLabel?.text = cardListType[indexPath.row].capitalizedString
+        var cellSelectedColorView = UIView()
+        var cardState = cardListType[indexPath.row].included
+        
+        switch cardState {
+        case true:
+            CheckButtonImage = UIImage(named: "button-done")
+            CheckButton.selected = false
+        case false:
+            CheckButtonImage = UIImage(named: "button-reshuffle")
+            CheckButton.selected = true
+        default:
+            break
+        }
+        
+        CheckButton.buttonType == UIButtonType.Custom
+        CheckButton.setBackgroundImage(CheckButtonImage, forState: UIControlState.Normal)
+        CheckButton.backgroundColor = UIColor.clearColor()
+        CheckButton.addTarget(self, action: "accessoryButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+        CheckButton.tag = indexPath.row
+        
+        cellSelectedColorView.backgroundColor = UIColor(red: 0, green: 0.569, blue: 0.998, alpha: 1)
+        
+        Cell.textLabel?.text = cardListType[indexPath.row].name.capitalizedString
         Cell.textLabel?.textColor = UIColor(white: 1, alpha: 0.7)
-        
-        Cell.backgroundColor = UIColor(white: 0, alpha: 0)
         Cell.tintColor = UIColor(white: 1, alpha: 0.7)
+        Cell.backgroundColor = UIColor.clearColor()
+        Cell.selectedBackgroundView = cellSelectedColorView
         
-        Cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        Cell.accessoryView = CheckButton
         
         return Cell
+    }
+    
+    func accessoryButtonTapped(sender: UIButton!) {
+        
+        print("You tapped row \(sender.tag) ")
+        
+        sender.selected = !sender.selected
+        
+        switch sender.selected {
+        case true:
+            cardListType[sender.tag].included = false
+        case false:
+            cardListType[sender.tag].included = true
+        default:
+            break
+        }
+        
+        print("and it is now \(cardListType[sender.tag].included). ")
+        print(sender.state.toRaw())
+        
+        cardListTableView.reloadData()
     }
     
     /*
@@ -578,7 +638,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        cardPreviewImageView.image = UIImage(named: cardListType[indexPath.row] + ".hq")
+        cardPreviewImageView.image = UIImage(named: cardListType[indexPath.row].image + ".hq")
         
     }
     

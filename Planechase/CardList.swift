@@ -97,25 +97,29 @@ var phenomList = [
     
 ]
 
-class CardDeck {
-    class Card {
-        
-        enum CardType { case Standard, Phenom }
-        
-        let name: String
-        let type: CardType
-        
-        let image: String
-        let backgroundImage: String
-        
-        init ( _ cname: String, _ ctype: CardType ) {
-            name = cname
-            type = ctype
-            image = name + ".hq"
-            backgroundImage = name + ".crop.hq"
-        }
-    }
+class Card {
     
+    enum CardType { case Standard, Phenom }
+    
+    let name: String
+    let type: CardType
+    
+    let image: String
+    let backgroundImage: String
+    
+    var included = true
+    
+    init ( _ cname: String, _ ctype: CardType ) {
+        name = cname
+        type = ctype
+        image = name + ".hq"
+        backgroundImage = name + ".crop.hq"
+    }
+}
+
+class CardDeck {
+    
+    var currentDeck = [Card]()
     var standardCards = [Card]()
     var phenomCards = [Card]()
     var drawnCards = [Card]()
@@ -133,6 +137,8 @@ class CardDeck {
         // Initialise Index Array of Cards
         load(cardList, Card.CardType.Standard)
         load(phenomList, Card.CardType.Phenom)
+        
+        currentDeck = standardCards
         
         shuffle()
     }
@@ -159,7 +165,7 @@ class CardDeck {
         return drawnCards[currentViewedCard]
     }
 
-    // Move to the prevsious drawn card
+    // Move to the previous drawn card
     var previousCard: Card {
         assert(!drawnCards.isEmpty)
         if 0 < currentViewedCard { currentViewedCard-- }
@@ -168,7 +174,7 @@ class CardDeck {
     }
     
     // Load the cards from an array of card string names
-    func load ( names: [String], _ cardType: CardDeck.Card.CardType ) {
+    func load ( names: [String], _ cardType: Card.CardType ) {
         // Initialise Index Array to size of Cards
         for string in names {
             switch cardType {
@@ -184,12 +190,12 @@ class CardDeck {
     
     // Draw a new card from the standard deck or draw a Phenom card
     func drawNewCard () -> (newCard: Bool, card:Card)? {
-        if standardCards.count < standardPosition {
+        if currentDeck.count < standardPosition {
             return nil
         }
         
         let isPhenom = numberGenerator(self.phenomProbability) == 0
-        var nextCard = standardCards[standardPosition++]
+        var nextCard = currentDeck[standardPosition++]
 
         if phenomOn && isPhenom && standardPosition > 1 {
             nextCard = phenomCards[numberGenerator(phenomCards.count)]
@@ -206,16 +212,16 @@ class CardDeck {
         standardPosition = 0
         currentViewedCard = 0
         
-        let count = standardCards.count
+        let count = currentDeck.count
         assert(0 <= count) // Count should alsways be positive.
         for index in 0 ..< count {
             // Random int from 0 to index-1
             let randomNumber = Int(arc4random_uniform(UInt32(count)))
             
             // Swap two array elements
-            let tmp = standardCards[index]
-            standardCards[index] = standardCards[randomNumber]
-            standardCards[randomNumber] = tmp
+            let tmp = currentDeck[index]
+            currentDeck[index] = currentDeck[randomNumber]
+            currentDeck[randomNumber] = tmp
         }
         
         drawNewCard()
