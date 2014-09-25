@@ -582,20 +582,20 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         switch cardState {
         case true:
-            CheckButtonImage = UIImage(named: "button-done")
+            CheckButtonImage = UIImage(named: "icon-included")
             CheckButton.selected = false
         case false:
-            CheckButtonImage = UIImage(named: "button-reshuffle")
+            CheckButtonImage = UIImage(named: "icon-excluded")
             CheckButton.selected = true
         default:
             break
         }
         
-        CheckButton.buttonType == UIButtonType.Custom
-        CheckButton.setBackgroundImage(CheckButtonImage, forState: UIControlState.Normal)
+        CheckButton.setImage(CheckButtonImage, forState: UIControlState.Normal)
         CheckButton.backgroundColor = UIColor.clearColor()
         CheckButton.addTarget(self, action: "accessoryButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         CheckButton.tag = indexPath.row
+        //CheckButton.imageView?.contentMode = UIViewContentMode.Center
         
         cellSelectedColorView.backgroundColor = UIColor(red: 0, green: 0.569, blue: 0.998, alpha: 1)
         
@@ -612,8 +612,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func accessoryButtonTapped(sender: UIButton!) {
         
-        print("You tapped row \(sender.tag) ")
-        
         sender.selected = !sender.selected
         
         switch sender.selected {
@@ -624,9 +622,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         default:
             break
         }
-        
-        print("and it is now \(cardListType[sender.tag].included). ")
-        print(sender.state.toRaw())
         
         cardListTableView.reloadData()
     }
