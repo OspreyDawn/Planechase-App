@@ -56,10 +56,8 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var attachmentBehavior : UIAttachmentBehavior!
     var gravityBehavior : UIGravityBehavior!
     var snapBehavior : UISnapBehavior!
-    
     var translateFrom = CGFloat()
     var counterCount = Int()
-    
     var deck = CardDeck(phenom: 10)
     var cardListType = [Card]()
     
@@ -325,8 +323,6 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
     }
     
-
-    
     @IBAction func reshuffleButtonDidPress(sender: AnyObject) {
         
         deck.shuffle()
@@ -402,8 +398,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBAction func cardSelectButtonDidPress(sender: AnyObject) {
         
-        cardListType = deck.standardCards
-        cardListTableView.reloadData()
+        //cardListTableView.reloadData()
         
         cardSelectView.hidden = false
         cardSelectView.alpha = 0
@@ -541,6 +536,7 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         planarCardView.alpha = 0
         
+        cardListType = deck.standardCards
         cardListTableView.separatorColor = UIColor(white: 1, alpha: 0.3)
         
     }
@@ -570,13 +566,12 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         return cardListType.count
     }
     
-    var CheckButtonImage = UIImage()
-    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let Cell = UITableViewCell()
         let CheckButton = UIButton(frame: CGRectMake(0, 0, 25, 25))
         
+        var CheckButtonImage = UIImage()
         var cellSelectedColorView = UIView()
         var cardState = cardListType[indexPath.row].included
         

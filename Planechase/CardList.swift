@@ -214,8 +214,17 @@ class CardDeck {
     // Shuffle the card deck, reseting the drawn cards, and dealling a new card.
     func shuffle () {
         drawnCards = [] // empty the drawn cards
+        currentDeck = [] // empty the current deck
         standardPosition = 0
         currentViewedCard = 0
+        
+        for index in 0 ..< standardCards.count {
+            
+            if standardCards[index].included == true {
+                currentDeck.append(standardCards[index])
+            }
+            
+        }
         
         let count = currentDeck.count
         assert(0 <= count) // Count should alsways be positive.
