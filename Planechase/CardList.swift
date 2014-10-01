@@ -125,34 +125,28 @@ class Card {
 class CardDeck {
     
     var currentDeck = [Card]()
+    var currentPhenomCards = [Card]()
     var standardCards = [Card]()
     var phenomCards = [Card]()
     var drawnCards = [Card]()
     
-    var phenomOn = true
     var standardPosition = 0
-    var probability = 0
+    var phenomPosition = 0
+    var phenomProbability = 5
     var currentViewedCard = 0
 
-    init (phenom: Int = 0) {
+    init () {
 
         // Initialise the Card Deck, shuffle it, then draw the first card.
-        phenomProbability = phenom
         
         // Initialise Index Array of Cards
         load(cardList, Card.CardType.Standard)
         load(phenomList, Card.CardType.Phenom)
         
         currentDeck = standardCards
+        currentPhenomCards = phenomCards
         
         shuffle()
-    }
-    
-    var phenomProbability: Int {
-        get { return probability }
-        set { if newValue == 1 {phenomOn = false}
-            probability = newValue
-        }
     }
 
     // Position onto the last drawn, or 'current' card
@@ -199,11 +193,19 @@ class CardDeck {
             return nil
         }
         
-        let isPhenom = numberGenerator(self.phenomProbability) == 0
+        if drawnCards.count == currentDeck.count {
+            drawnCards = []
+            standardPosition = 0
+            phenomPosition = 0
+            currentViewedCard = 0
+            phenomPosition = 0
+        }
+        
+        let isPhenom = numberGenerator(phenomProbability) == 0
         var nextCard = currentDeck[standardPosition++]
-
-        if phenomOn && isPhenom && standardPosition > 1 {
-            nextCard = phenomCards[numberGenerator(phenomCards.count)]
+        
+        if isPhenom && standardPosition > 1 && phenomPosition <= currentPhenomCards.count-1 {
+            nextCard = currentPhenomCards[phenomPosition++]
         }
         
         drawnCards.append(nextCard)
@@ -215,8 +217,10 @@ class CardDeck {
     func shuffle () {
         drawnCards = [] // empty the drawn cards
         currentDeck = [] // empty the current deck
+        currentPhenomCards = [] // empty the current phenom card list
         standardPosition = 0
         currentViewedCard = 0
+        phenomPosition = 0
         
         for index in 0 ..< standardCards.count {
             
@@ -226,16 +230,37 @@ class CardDeck {
             
         }
         
-        let count = currentDeck.count
-        assert(0 <= count) // Count should alsways be positive.
-        for index in 0 ..< count {
+        for index in 0 ..< phenomCards.count {
+            
+            if phenomCards[index].included == true {
+                currentPhenomCards.append(phenomCards[index])
+            }
+            
+        }
+        
+        let standardCount = currentDeck.count
+        let phenomCount = currentPhenomCards.count
+        assert(0 <= standardCount)
+        assert(0 <= phenomCount)// Count should alsways be positive.
+        
+        for index in 0 ..< standardCount {
             // Random int from 0 to index-1
-            let randomNumber = Int(arc4random_uniform(UInt32(count)))
+            let randomNumber = Int(arc4random_uniform(UInt32(standardCount)))
             
             // Swap two array elements
             let tmp = currentDeck[index]
             currentDeck[index] = currentDeck[randomNumber]
             currentDeck[randomNumber] = tmp
+        }
+        
+        for index in 0 ..< phenomCount {
+            // Random int from 0 to index-1
+            let randomNumber = Int(arc4random_uniform(UInt32(phenomCount)))
+            
+            // Swap two array elements
+            let tmp = currentPhenomCards[index]
+            currentPhenomCards[index] = currentPhenomCards[randomNumber]
+            currentPhenomCards[randomNumber] = tmp
         }
         
         drawNewCard()

@@ -28,20 +28,15 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var cardPreviewImageView: UIImageView!
     @IBOutlet weak var planarImageView: UIImageView!
     @IBOutlet weak var planarDieImageView: UIImageView!
-    @IBOutlet weak var phenomSliderView: UIView!
-    @IBOutlet weak var phenomSliderImageView: UIImageView!
     @IBOutlet weak var reshuffleButton: UIButton!
-    @IBOutlet weak var phenomChanceButton: UIButton!
-    @IBOutlet weak var phenomChanceSlider: UISlider!
+    @IBOutlet weak var gameModeButton: UIButton!
     @IBOutlet weak var rollDieButton: UIButton!
     @IBOutlet weak var currentPlaneButton: UIButton!
     @IBOutlet weak var cardSelectButton: UIButton!
     @IBOutlet weak var cardSelectDoneButton: UIButton!
-    @IBOutlet weak var hideSliderButton: UIButton!
     @IBOutlet weak var increaseCounterButton: UIButton!
     @IBOutlet weak var decreaseCounterButton: UIButton!
     @IBOutlet weak var cardTypeControl: UISegmentedControl!
-    @IBOutlet weak var phenomChanceLabel: UILabel!
     
     enum DeckDirection: Int {
         
@@ -58,10 +53,8 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
     var snapBehavior : UISnapBehavior!
     var translateFrom = CGFloat()
     var counterCount = Int()
-    var deck = CardDeck(phenom: 10)
+    var deck = CardDeck()
     var cardListType = [Card]()
-    
-    
     
     /*
         gestureBegin removes the snap behaviour of the planarCardView when it is
@@ -274,6 +267,8 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         }
         
+        rollDieButton.enabled = false
+        
         planarDieMaskView.alpha = 0
         planarDieMaskView.hidden = false
         planarDieImageView.hidden = true
@@ -307,9 +302,10 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
                 
             }
             
-            delay (StandardTimeDelay) {
+            delay (0.3) {
                 
                 self.planarDieMaskView.hidden = true
+                self.rollDieButton.enabled = true
                 
                 if rollDie == 0 {
                     
@@ -331,69 +327,16 @@ class HomeView: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     }
     
-    @IBAction func phenomChanceButtonDidPress(sender: AnyObject) {
+    @IBAction func gameModeButtonDidPress(sender: AnyObject) {
         
-        phenomSliderView.hidden = false
-        hideSliderButton.hidden = false
+        var modeAlertView = UIAlertView()
         
-        let Scale = CGAffineTransformMakeScale(0.3, 0.3)
-        let Translate = CGAffineTransformMakeTranslation(0, -50)
+        modeAlertView.title = "Eternities Map"
+        modeAlertView.message = "Game Mode Coming Soon"
+        modeAlertView.addButtonWithTitle("Dismiss")
         
-        phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
-        phenomSliderView.alpha = 0
+        modeAlertView.show()
         
-        spring (0.5) {
-            
-            let Scale = CGAffineTransformMakeScale(1, 1)
-            let Translate = CGAffineTransformMakeTranslation(0, 0)
-            
-            self.phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
-            self.phenomSliderView.alpha = 1
-            
-        }
-        
-    }
-    
-    @IBAction func hideSliderButtonDidPress(sender: AnyObject) {
-        
-        hideSliderButton.hidden = true
-        
-        let Scale = CGAffineTransformMakeScale(1, 1)
-        let Translate = CGAffineTransformMakeTranslation(0, 0)
-        
-        phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
-        phenomSliderView.alpha = 1
-        
-        spring (0.5) {
-            
-            let Scale = CGAffineTransformMakeScale(0.3, 0.3)
-            let Translate = CGAffineTransformMakeTranslation(0, -50)
-            
-            self.phenomSliderView.transform = CGAffineTransformConcat(Scale, Translate)
-            self.phenomSliderView.alpha = 0
-            
-        }
-        
-    }
-    
-    /*
-        phenomChanceSliderDidChange changes the chances phenomenoms have to appear based
-        user input
-    */
-    
-    @IBAction func phenomChanceSliderDidChange(sender: AnyObject) {
-        
-        var sliderValue = Int(phenomChanceSlider.value)
-        
-        phenomChanceLabel.text = "1 in " + "\(sliderValue)"
-        
-        deck.probability = sliderValue
-        
-        if sliderValue == 1 {
-            
-            phenomChanceLabel.text = "Off"
-            
-        }
     }
     
     @IBAction func cardSelectButtonDidPress(sender: AnyObject) {

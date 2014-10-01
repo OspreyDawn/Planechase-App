@@ -37,7 +37,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <action selector="phenomChanceButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kAG-Yd-cfc"/>
+                                            <action selector="gameModeButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aQg-o3-h4u"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="zou-o4-qAm">
@@ -145,47 +145,6 @@
                                     <outletCollection property="gestureRecognizers" destination="gcF-Hk-HsI" appends="YES" id="ky8-V8-P28"/>
                                 </connections>
                             </view>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="T0g-nG-Xvr">
-                                <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="hideSliderButtonDidPress:" destination="BYZ-38-t0r" eventType="touchUpInside" id="YGq-is-4tE"/>
-                                </connections>
-                            </button>
-                            <view hidden="YES" contentMode="scaleToFill" id="H8f-de-HZz">
-                                <rect key="frame" x="387" y="90" width="250" height="120"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" image="image-phenomSliderView" id="x55-KD-q3A">
-                                        <rect key="frame" x="0.0" y="0.0" width="250" height="120"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                    </imageView>
-                                    <slider opaque="NO" alpha="0.69999999999999973" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="10" minValue="1" maxValue="10" id="mjA-X2-O3e">
-                                        <rect key="frame" x="20" y="82" width="210" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <action selector="phenomChanceSliderDidChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="c0C-91-svd"/>
-                                        </connections>
-                                    </slider>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 in 10" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="nOu-ef-Ve0">
-                                        <rect key="frame" x="96" y="52" width="59" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.70000000000000007" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Phenomenon Chance" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b7O-Wc-OOA">
-                                        <rect key="frame" x="56" y="32" width="139" height="17"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                            </view>
                             <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" id="pqy-tT-fs2">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -239,7 +198,7 @@
                                             </segmentedControl>
                                         </subviews>
                                     </view>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mount keralia.hq" id="WEa-Nk-nrt">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="academy at tolaria west.hq" id="WEa-Nk-nrt">
                                         <rect key="frame" x="373" y="177" width="601" height="414"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <userDefinedRuntimeAttributes>
@@ -268,13 +227,8 @@
                         <outlet property="counterCountLabel" destination="MRw-a1-oAQ" id="AyE-BD-ez0"/>
                         <outlet property="currentPlaneButton" destination="aDG-ak-lol" id="rZQ-IF-RuV"/>
                         <outlet property="decreaseCounterButton" destination="xlm-cf-ZZK" id="IaT-1I-Q2p"/>
-                        <outlet property="hideSliderButton" destination="T0g-nG-Xvr" id="lOU-Dx-w7O"/>
+                        <outlet property="gameModeButton" destination="Ezf-bd-hwN" id="OBu-Lf-GQc"/>
                         <outlet property="increaseCounterButton" destination="ZWn-EG-66z" id="kx8-OW-oph"/>
-                        <outlet property="phenomChanceButton" destination="Ezf-bd-hwN" id="Xx9-sn-oah"/>
-                        <outlet property="phenomChanceLabel" destination="nOu-ef-Ve0" id="cJR-hU-L3L"/>
-                        <outlet property="phenomChanceSlider" destination="mjA-X2-O3e" id="44O-FR-Tc1"/>
-                        <outlet property="phenomSliderImageView" destination="x55-KD-q3A" id="PIz-eT-8n4"/>
-                        <outlet property="phenomSliderView" destination="H8f-de-HZz" id="g1u-0e-GA3"/>
                         <outlet property="planarCardView" destination="DNy-Eu-8Gz" id="hfE-af-D5P"/>
                         <outlet property="planarCounterLabel" destination="F5C-mQ-mE7" id="Gpo-Zz-jll"/>
                         <outlet property="planarCounterView" destination="d1F-h6-65P" id="z7J-lo-dUx"/>
@@ -296,11 +250,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="academy at tolaria west.hq" width="1490" height="1040"/>
         <image name="button-cardSelection" width="100" height="100"/>
         <image name="button-done" width="100" height="100"/>
         <image name="button-phenom" width="100" height="100"/>
         <image name="button-reshuffle" width="100" height="100"/>
-        <image name="image-phenomSliderView" width="500" height="240"/>
         <image name="mount keralia.crop.hq" width="1255" height="520"/>
         <image name="mount keralia.hq" width="1490" height="1040"/>
     </resources>
